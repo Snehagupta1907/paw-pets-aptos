@@ -1,0 +1,13 @@
+[package]
+name = "KittyPet"
+version = "1.0.0"
+upgrade_policy = "compatible"
+
+[dependencies]
+AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework/", rev = "main" }
+
+[addresses]
+kitty_pet = "0x2afecf41b2f8834ce30f6c774eebcce52aea4fe932746c13e3f2c86b3b7dc975"
+
+[dev-dependencies]
+AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework/", rev = "main" }
