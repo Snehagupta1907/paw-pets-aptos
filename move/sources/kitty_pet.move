@@ -1,6 +1,6 @@
 module kitty_pet::kitty_game {
     use std::signer;
-    use std::string::String;
+    use std::string::{Self, String};
     use std::vector;
     use aptos_framework::timestamp;
 
@@ -10,8 +10,12 @@ module kitty_pet::kitty_game {
     const EKITTY_NOT_OWNER: u64 = 3;
     const EKITTY_ALREADY_EXISTS: u64 = 4;
     const EINVALID_ACTION: u64 = 5;
+    const EKITTY_STORE_NOT_INITIALIZED: u64 = 6;
 
-    // Kitty growth stages using Move 2.0 enum types
+
+    // Module address for the kitty store
+    const KITTY_STORE_ADDRESS: address = @kitty_pet;
+
     enum KittyStage has drop, store {
         Baby,    // 0-100 XP
         Teen,    // 101-300 XP
@@ -61,6 +65,9 @@ module kitty_pet::kitty_game {
 
     // Initialize the kitty store
     public entry fun initialize(account: &signer) {
+        // Only allow initialization by the module publisher
+        assert!(signer::address_of(account) == @kitty_pet, EKITTY_STORE_NOT_INITIALIZED);
+        
         let store = KittyStore {
             kitties: vector::empty(),
             next_id: 0,
@@ -75,7 +82,11 @@ module kitty_pet::kitty_game {
         name: String,
         time: u64,
     ) acquires KittyStore {
-        let store = borrow_global_mut<KittyStore>(signer::address_of(account));
+        // Input validation for production
+        assert!(string::length(&name) > 0, EINVALID_ACTION);
+        assert!(string::length(&name) <= 50, EINVALID_ACTION); // Reasonable name length limit
+
+        let store = borrow_global_mut<KittyStore>(KITTY_STORE_ADDRESS);
         let kitty_id = store.next_id;
         store.next_id = store.next_id + 1;
         store.total_kitties = store.total_kitties + 1;
@@ -106,16 +117,13 @@ module kitty_pet::kitty_game {
             total_care_actions: 0,
         };
 
-        // Store kitty at its unique address
-        let kitty_address = get_kitty_address(kitty_id);
-        // For now, we'll store at the owner's address but with a unique name
-        // In a real implementation, you'd use object::new_address() or similar
+        // Store kitty in the vector
         vector::push_back(&mut store.kitties, kitty);
     }
 
     // Feed the kitty using receiver style functions (Move 2.0 feature)
     public entry fun feed_kitty(account: &signer, kitty_id: u64, time: u64) acquires KittyStore {
-        let store = borrow_global_mut<KittyStore>(signer::address_of(account));
+        let store = borrow_global_mut<KittyStore>(KITTY_STORE_ADDRESS);
         let kitty = find_kitty_by_id(&mut store.kitties, kitty_id);
         assert!(kitty.owner == signer::address_of(account), EKITTY_NOT_OWNER);
 
@@ -136,7 +144,7 @@ module kitty_pet::kitty_game {
 
     // Play with the kitty
     public entry fun play_with_kitty(account: &signer, kitty_id: u64, time: u64) acquires KittyStore {
-        let store = borrow_global_mut<KittyStore>(signer::address_of(account));
+        let store = borrow_global_mut<KittyStore>(KITTY_STORE_ADDRESS);
         let kitty = find_kitty_by_id(&mut store.kitties, kitty_id);
         assert!(kitty.owner == signer::address_of(account), EKITTY_NOT_OWNER);
 
@@ -154,7 +162,7 @@ module kitty_pet::kitty_game {
 
     // Put kitty to sleep
     public entry fun sleep_kitty(account: &signer, kitty_id: u64, time: u64) acquires KittyStore {
-        let store = borrow_global_mut<KittyStore>(signer::address_of(account));
+        let store = borrow_global_mut<KittyStore>(KITTY_STORE_ADDRESS);
         let kitty = find_kitty_by_id(&mut store.kitties, kitty_id);
         assert!(kitty.owner == signer::address_of(account), EKITTY_NOT_OWNER);
 
@@ -171,7 +179,7 @@ module kitty_pet::kitty_game {
 
     // Clean the kitty
     public entry fun clean_kitty(account: &signer, kitty_id: u64, time: u64) acquires KittyStore {
-        let store = borrow_global_mut<KittyStore>(signer::address_of(account));
+        let store = borrow_global_mut<KittyStore>(KITTY_STORE_ADDRESS);
         let kitty = find_kitty_by_id(&mut store.kitties, kitty_id);
         assert!(kitty.owner == signer::address_of(account), EKITTY_NOT_OWNER);
 
@@ -188,7 +196,7 @@ module kitty_pet::kitty_game {
 
     // Add accessory to kitty
     public entry fun add_accessory(account: &signer, kitty_id: u64, accessory: String, time: u64) acquires KittyStore {
-        let store = borrow_global_mut<KittyStore>(signer::address_of(account));
+        let store = borrow_global_mut<KittyStore>(KITTY_STORE_ADDRESS);
         let kitty = find_kitty_by_id(&mut store.kitties, kitty_id);
         assert!(kitty.owner == signer::address_of(account), EKITTY_NOT_OWNER);
 
@@ -203,7 +211,7 @@ module kitty_pet::kitty_game {
     // Get kitty by ID
     #[view]
     public fun get_kitty_owner(kitty_id: u64): address acquires KittyStore {
-        let store = borrow_global<KittyStore>(@0x2afecf41b2f8834ce30f6c774eebcce52aea4fe932746c13e3f2c86b3b7dc975);
+        let store = borrow_global<KittyStore>(KITTY_STORE_ADDRESS);
         let kitty = find_kitty_by_id_immutable(&store.kitties, kitty_id);
         kitty.owner
     }
@@ -211,30 +219,21 @@ module kitty_pet::kitty_game {
     // Get all kitties for an owner
     #[view]
     public fun get_owner_kitties(owner: address): vector<u64> acquires KittyStore {
-        let store = borrow_global<KittyStore>(owner);
+        let store = borrow_global<KittyStore>(KITTY_STORE_ADDRESS);
         let kitties: vector<u64> = vector::empty();
         let i = 0;
         let len = vector::length(&store.kitties);
         while (i < len) {
             let kitty = vector::borrow(&store.kitties, i);
-            vector::push_back(&mut kitties, kitty.id);
+            if (kitty.owner == owner) {
+                vector::push_back(&mut kitties, kitty.id);
+            };
             i = i + 1;
         };
         kitties
     }
 
     // Helper functions
-    fun get_kitty_address(kitty_id: u64): address {
-        // Use a simple mapping: kitty 0 -> @0x1, kitty 1 -> @0x2, etc.
-        // In production, you'd use object::new_address() or a more sophisticated mapping
-        if (kitty_id == 0) { @0x1 }
-        else if (kitty_id == 1) { @0x2 }
-        else if (kitty_id == 2) { @0x3 }
-        else if (kitty_id == 3) { @0x4 }
-        else if (kitty_id == 4) { @0x5 }
-        else { @0x6 } // For testing, we'll use @0x6 for any kitty_id >= 5
-    }
-
     fun find_kitty_by_id(kitties: &mut vector<Kitty>, kitty_id: u64): &mut Kitty {
         let i = 0;
         let len = vector::length(kitties);
@@ -291,8 +290,6 @@ module kitty_pet::kitty_game {
     }
 
     fun check_level_up(kitty: &mut Kitty) {
-        let old_level = kitty.level;
-
         // Level up logic based on experience
         if (kitty.experience >= 100 && kitty.level < 2) {
             kitty.level = 2;
@@ -309,14 +306,14 @@ module kitty_pet::kitty_game {
     // View functions for frontend
     #[view]
     public fun get_kitty_stats(kitty_id: u64): (u8, u8, u8, u8, u8) acquires KittyStore {
-        let store = borrow_global<KittyStore>(@0x2afecf41b2f8834ce30f6c774eebcce52aea4fe932746c13e3f2c86b3b7dc975);
+        let store = borrow_global<KittyStore>(KITTY_STORE_ADDRESS);
         let kitty = find_kitty_by_id_immutable(&store.kitties, kitty_id);
         (kitty.hunger, kitty.energy, kitty.happiness, kitty.health, kitty.cleanliness)
     }
 
     #[view]
     public fun get_kitty_stage_u8(kitty_id: u64): u8 acquires KittyStore {
-        let store = borrow_global<KittyStore>(@0x2afecf41b2f8834ce30f6c774eebcce52aea4fe932746c13e3f2c86b3b7dc975);
+        let store = borrow_global<KittyStore>(KITTY_STORE_ADDRESS);
         let kitty = find_kitty_by_id_immutable(&store.kitties, kitty_id);
         if (&kitty.stage is KittyStage::Baby) { 0 }
         else if (&kitty.stage is KittyStage::Teen) { 1 }
@@ -326,7 +323,7 @@ module kitty_pet::kitty_game {
 
     #[view]
     public fun get_kitty_mood_u8(kitty_id: u64): u8 acquires KittyStore {
-        let store = borrow_global<KittyStore>(@0x2afecf41b2f8834ce30f6c774eebcce52aea4fe932746c13e3f2c86b3b7dc975);
+        let store = borrow_global<KittyStore>(KITTY_STORE_ADDRESS);
         let kitty = find_kitty_by_id_immutable(&store.kitties, kitty_id);
         if (&kitty.mood is KittyMood::Happy) { 0 }
         else if (&kitty.mood is KittyMood::Hungry) { 1 }
@@ -338,8 +335,38 @@ module kitty_pet::kitty_game {
     // Get kitty name
     #[view]
     public fun get_kitty_name(kitty_id: u64): String acquires KittyStore {
-        let store = borrow_global<KittyStore>(@0x2afecf41b2f8834ce30f6c774eebcce52aea4fe932746c13e3f2c86b3b7dc975);
+        let store = borrow_global<KittyStore>(KITTY_STORE_ADDRESS);
         let kitty = find_kitty_by_id_immutable(&store.kitties, kitty_id);
         kitty.name
+    }
+
+    // Get total number of kitties (for production monitoring)
+    #[view]
+    public fun get_total_kitties(): u64 acquires KittyStore {
+        let store = borrow_global<KittyStore>(KITTY_STORE_ADDRESS);
+        store.total_kitties
+    }
+
+    // Get next kitty ID (for production monitoring)
+    #[view]
+    public fun get_next_kitty_id(): u64 acquires KittyStore {
+        let store = borrow_global<KittyStore>(KITTY_STORE_ADDRESS);
+        store.next_id
+    }
+
+    // Get kitty experience and level
+    #[view]
+    public fun get_kitty_progress(kitty_id: u64): (u64, u8) acquires KittyStore {
+        let store = borrow_global<KittyStore>(KITTY_STORE_ADDRESS);
+        let kitty = find_kitty_by_id_immutable(&store.kitties, kitty_id);
+        (kitty.experience, kitty.level)
+    }
+
+    // Get kitty accessories
+    #[view]
+    public fun get_kitty_accessories(kitty_id: u64): vector<String> acquires KittyStore {
+        let store = borrow_global<KittyStore>(KITTY_STORE_ADDRESS);
+        let kitty = find_kitty_by_id_immutable(&store.kitties, kitty_id);
+        kitty.accessories
     }
 } 

@@ -1,0 +1,25 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+.head {
+  padding-bottom: .5em;
+  font-weight: 600;
+}
+
+.outermain {
+  position: relative;
+}
+
+.loginCont {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+

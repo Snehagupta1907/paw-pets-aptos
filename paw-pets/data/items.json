@@ -1,0 +1,32 @@
+[
+   {
+      "name": "cat lamp",
+      "image": "/items/cat_lamp.svg",
+      "id": 1
+   },
+   {
+      "name": "cushion",
+      "image": "/items/cushion.svg",
+      "id": 2
+   },
+   {
+      "name": "scratch post",
+      "image": "/items/scratchpost.svg",
+      "id": 3
+   },
+   {
+      "name": "blanket",
+      "image": "/items/blanket.svg",
+      "id": 4
+   },
+   {
+      "name": "bonsai",
+      "image": "/items/bonsai.svg",
+      "id": 5
+   },
+   {
+      "name": "yarn",
+      "image": "/items/yarn.svg",
+      "id": 6
+   }
+]

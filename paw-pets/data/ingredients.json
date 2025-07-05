@@ -1,0 +1,32 @@
+[
+   {
+      "name": "rice",
+      "image": "/ingredients/rice.png",
+      "id": 1
+   },
+   {
+      "name": "catnip",
+      "image": "/ingredients/catnip.png",
+      "id": 2
+   },
+   {
+      "name": "leek",
+      "image": "/ingredients/leek.png",
+      "id": 3
+   },
+   {
+      "name": "rat",
+      "image": "/ingredients/rat.png",
+      "id": 4
+   },
+   {
+      "name": "seaweed",
+      "image": "/ingredients/seaweed.png",
+      "id": 5
+   },
+   {
+      "name": "strawberry",
+      "image": "/ingredients/strawberry.png",
+      "id": 6
+   }
+]
