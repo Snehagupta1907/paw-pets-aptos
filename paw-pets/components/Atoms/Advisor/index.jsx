@@ -117,102 +117,138 @@ export default function Advisor({ selectedKitty, isPlaying }) {
    return (
       <CatBox>
          <CatDiv>
-            <div style={{position:'relative', width:180, height:180}}>
-               <CatImage
-                  src={selectedKitty?.catImage || '/cats/advisor/base.svg'}
-                  id="advisor"
-                  width={180}
-                  height={180}
-                  alt={selectedKitty?.name || 'this is your advisor'}
-                  isPlaying={isPlaying}
-                  onClick={async ()=>{HandleTextBox(); let randomMeow = await selectRandomFromArray(catMeow[0]); meow.current = await randomMeow; sound()}}
-               />
-               {/* Dirt patches if needsBath */}
-               {needsBath && (
-                  <>
-                     {/* Large dark brown patch */}
-                     <span style={{position:'absolute', left:30, top:25, fontSize:'2.8em', color:'#4B2E05', opacity:0.8, filter:'blur(0.5px)'}}>●</span>
-                     {/* Medium black patch */}
-                     <span style={{position:'absolute', right:40, top:70, fontSize:'2em', color:'#222', opacity:0.7, filter:'blur(0.5px)'}}>●</span>
-                     {/* Small dark brown patch */}
-                     <span style={{position:'absolute', left:100, bottom:40, fontSize:'1.3em', color:'#6B3E26', opacity:0.6, filter:'blur(0.5px)'}}>●</span>
-                     {/* Medium brown patch */}
-                     <span style={{position:'absolute', left:70, top:120, fontSize:'1.7em', color:'#8B5C2A', opacity:0.7, filter:'blur(0.5px)'}}>●</span>
-                     {/* Small black patch */}
-                     <span style={{position:'absolute', right:60, bottom:50, fontSize:'1.1em', color:'#111', opacity:0.6, filter:'blur(0.5px)'}}>●</span>
-                     {/* Extra small dark brown patch */}
-                     <span style={{position:'absolute', left:120, top:60, fontSize:'0.9em', color:'#3B230C', opacity:0.5, filter:'blur(0.5px)'}}>●</span>
-                     {/* Extra small black patch */}
-                     <span style={{position:'absolute', left:150, bottom:20, fontSize:'0.8em', color:'#000', opacity:0.5, filter:'blur(0.5px)'}}>●</span>
-                  </>
-               )}
-               {/* Sleepy Zs if allowed */}
-               {isVerySleepy && (
-                  <>
-                     <span style={{position:'absolute', left:10, top:10, fontSize:'2em', color:'#fff', fontWeight:700, animation:'floatZ 1.5s infinite alternate'}}>Z</span>
-                     <span style={{position:'absolute', right:20, top:30, fontSize:'1.5em', color:'#fff', fontWeight:700, animation:'floatZ2 1.2s infinite alternate'}}>Z</span>
-                     <span style={{position:'absolute', left:60, bottom:10, fontSize:'1.2em', color:'#fff', fontWeight:700, animation:'floatZ3 1.8s infinite alternate'}}>z</span>
-                     <style>{`
-                        @keyframes floatZ { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
-                        @keyframes floatZ2 { 0%{transform:translateY(0);} 100%{transform:translateY(-7px);} }
-                        @keyframes floatZ3 { 0%{transform:translateY(0);} 100%{transform:translateY(-5px);} }
-                     `}</style>
-                  </>
-               )}
-            </div>
-            {/* Action buttons by priority */}
-            {needsFeeding && (
-               <div style={{marginTop:'1em', color:'var(--button-red)', fontWeight:600}}>Feed your kitty first!</div>
+                        {selectedKitty ? (
+               <div style={{position:'relative', width:180, height:180}}>
+                  <CatImage
+                     src={selectedKitty.catImage}
+                     id="advisor"
+                     width={180}
+                     height={180}
+                     alt={selectedKitty.name || 'this is your advisor'}
+                     isPlaying={isPlaying}
+                     onClick={async ()=>{HandleTextBox(); let randomMeow = await selectRandomFromArray(catMeow[0]); meow.current = await randomMeow; sound()}}
+                  />
+                  {/* Dirt patches if needsBath */}
+                  {needsBath && (
+                     <>
+                        {/* Large dark brown patch */}
+                        <span style={{position:'absolute', left:30, top:25, fontSize:'2.8em', color:'#4B2E05', opacity:0.8, filter:'blur(0.5px)'}}>●</span>
+                        {/* Medium black patch */}
+                        <span style={{position:'absolute', right:40, top:70, fontSize:'2em', color:'#222', opacity:0.7, filter:'blur(0.5px)'}}>●</span>
+                        {/* Small dark brown patch */}
+                        <span style={{position:'absolute', left:100, bottom:40, fontSize:'1.3em', color:'#6B3E26', opacity:0.6, filter:'blur(0.5px)'}}>●</span>
+                        {/* Medium brown patch */}
+                        <span style={{position:'absolute', left:70, top:120, fontSize:'1.7em', color:'#8B5C2A', opacity:0.7, filter:'blur(0.5px)'}}>●</span>
+                        {/* Small black patch */}
+                        <span style={{position:'absolute', right:60, bottom:50, fontSize:'1.1em', color:'#111', opacity:0.6, filter:'blur(0.5px)'}}>●</span>
+                        {/* Extra small dark brown patch */}
+                        <span style={{position:'absolute', left:120, top:60, fontSize:'0.9em', color:'#3B230C', opacity:0.5, filter:'blur(0.5px)'}}>●</span>
+                        {/* Extra small black patch */}
+                        <span style={{position:'absolute', left:150, bottom:20, fontSize:'0.8em', color:'#000', opacity:0.5, filter:'blur(0.5px)'}}>●</span>
+                     </>
+                  )}
+                  {/* Sleepy Zs if allowed */}
+                  {isVerySleepy && (
+                     <>
+                        <span style={{position:'absolute', left:10, top:10, fontSize:'2em', color:'#fff', fontWeight:700, animation:'floatZ 1.5s infinite alternate'}}>Z</span>
+                        <span style={{position:'absolute', right:20, top:30, fontSize:'1.5em', color:'#fff', fontWeight:700, animation:'floatZ2 1.2s infinite alternate'}}>Z</span>
+                        <span style={{position:'absolute', left:60, bottom:10, fontSize:'1.2em', color:'#fff', fontWeight:700, animation:'floatZ3 1.8s infinite alternate'}}>z</span>
+                        <style>{`
+                           @keyframes floatZ { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
+                           @keyframes floatZ2 { 0%{transform:translateY(0);} 100%{transform:translateY(-7px);} }
+                           @keyframes floatZ3 { 0%{transform:translateY(0);} 100%{transform:translateY(-5px);} }
+                        `}</style>
+                     </>
+                  )}
+               </div>
+            ) : (
+               <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '180px',
+                  height: '180px',
+                  background: 'rgba(255, 255, 255, 0.9)',
+                  borderRadius: '50%',
+                  border: '3px solid var(--secondary-accent)',
+                  padding: '1em',
+                  textAlign: 'center'
+               }}>
+                  <div style={{
+                     fontSize: '1.2rem',
+                     fontWeight: '600',
+                     color: 'var(--secondary-accent)',
+                     marginBottom: '0.5em'
+                  }}>
+                     Select a Kitty
+                  </div>
+                  <div style={{
+                     fontSize: '0.9rem',
+                     color: 'var(--black)',
+                     opacity: 0.8
+                  }}>
+                     Choose a cat from your dex to interact with
+                  </div>
+               </div>
             )}
-            {!needsFeeding && needsHealth && (
-               <div style={{marginTop:'1em', color:'var(--button-red)', fontWeight:600}}>Kitty needs healing first!</div>
-            )}
-            {!needsFeeding && !needsHealth && needsBath && (
-               <button
-                  onClick={handleClean}
-                  disabled={cleaning}
-                  style={{
-                     marginTop: '1em',
-                     padding: '0.5em 1.5em',
-                     borderRadius: '1em',
-                     background: cleaning ? '#ccc' : '#8B5C2A',
-                     color: 'white',
-                     fontWeight: 600,
-                     border: 'none',
-                     cursor: cleaning ? 'not-allowed' : 'pointer',
-                     fontSize: '1.1rem',
-                  }}
-               >
-                  {cleaning ? 'Cleaning...' : 'Clean Kitty'}
-               </button>
-            )}
-            {cleanMsg && needsBath && (
-               <div style={{marginTop:'0.5em', color:'#8B5C2A', fontWeight:600}}>{cleanMsg}</div>
-            )}
-            {!needsFeeding && !needsHealth && !needsBath && isVerySleepy && (
-               <button
-                  onClick={handleSleep}
-                  disabled={sleeping}
-                  style={{
-                     marginTop: '1em',
-                     padding: '0.5em 1.5em',
-                     borderRadius: '1em',
-                     background: sleeping ? '#ccc' : 'var(--secondary-accent)',
-                     color: 'white',
-                     fontWeight: 600,
-                     border: 'none',
-                     cursor: sleeping ? 'not-allowed' : 'pointer',
-                     fontSize: '1.1rem',
-                  }}
-               >
-                  {sleeping ? 'Sleeping...' : 'Let Kitty Sleep'}
-               </button>
-            )}
-            {sleepMsg && isVerySleepy && !needsBath && (
-               <div style={{marginTop:'0.5em', color:'var(--secondary-accent)', fontWeight:600}}>{sleepMsg}</div>
+            {/* Action buttons by priority - only show if kitty is selected */}
+            {selectedKitty && (
+               <>
+                  {needsFeeding && (
+                     <div style={{marginTop:'1em', color:'var(--button-red)', fontWeight:600}}>Feed your kitty first!</div>
+                  )}
+                  {!needsFeeding && needsHealth && (
+                     <div style={{marginTop:'1em', color:'var(--button-red)', fontWeight:600}}>Kitty needs healing first!</div>
+                  )}
+                  {!needsFeeding && !needsHealth && needsBath && (
+                     <button
+                        onClick={handleClean}
+                        disabled={cleaning}
+                        style={{
+                           marginTop: '1em',
+                           padding: '0.5em 1.5em',
+                           borderRadius: '1em',
+                           background: cleaning ? '#ccc' : '#8B5C2A',
+                           color: 'white',
+                           fontWeight: 600,
+                           border: 'none',
+                           cursor: cleaning ? 'not-allowed' : 'pointer',
+                           fontSize: '1.1rem',
+                        }}
+                     >
+                        {cleaning ? 'Cleaning...' : 'Clean Kitty'}
+                     </button>
+                  )}
+                  {cleanMsg && needsBath && (
+                     <div style={{marginTop:'0.5em', color:'#8B5C2A', fontWeight:600}}>{cleanMsg}</div>
+                  )}
+                  {!needsFeeding && !needsHealth && !needsBath && isVerySleepy && (
+                     <button
+                        onClick={handleSleep}
+                        disabled={sleeping}
+                        style={{
+                           marginTop: '1em',
+                           padding: '0.5em 1.5em',
+                           borderRadius: '1em',
+                           background: sleeping ? '#ccc' : 'var(--secondary-accent)',
+                           color: 'white',
+                           fontWeight: 600,
+                           border: 'none',
+                           cursor: sleeping ? 'not-allowed' : 'pointer',
+                           fontSize: '1.1rem',
+                        }}
+                     >
+                        {sleeping ? 'Sleeping...' : 'Let Kitty Sleep'}
+                     </button>
+                  )}
+                  {sleepMsg && isVerySleepy && !needsBath && (
+                     <div style={{marginTop:'0.5em', color:'var(--secondary-accent)', fontWeight:600}}>{sleepMsg}</div>
+                  )}
+               </>
             )}
             <AnimatePresence>
-               {textbox && <CatTextBox text={text} name={selectedKitty?.name || "Kitty"} />}
+               {textbox && selectedKitty && <CatTextBox text={text} name={selectedKitty.name || "Kitty"} />}
             </AnimatePresence>
          </CatDiv>
       </CatBox>
