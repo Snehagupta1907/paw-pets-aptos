@@ -7,8 +7,8 @@ module kitty_pet::kitty_pet_tests {
     use aptos_framework::timestamp;
     use kitty_pet::kitty_game;
 
-    // Test account addresses
-    const OWNER: address = @0x1;
+    // Test account addresses - using the actual module address
+    const OWNER: address = @kitty_pet;
     const USER1: address = @0x2;
     const USER2: address = @0x3;
 
@@ -216,5 +216,42 @@ module kitty_pet::kitty_pet_tests {
         
         // Try to feed kitty with wrong account
         kitty_game::feed_kitty(&user1, 0, 0);
+    }
+
+    #[test]
+    fun test_accessory_pricing() {
+        // Test accessory prices
+        let basic_price = kitty_game::get_accessory_price(0);
+        let medium_price = kitty_game::get_accessory_price(1);
+        let premium_price = kitty_game::get_accessory_price(2);
+        let legendary_price = kitty_game::get_accessory_price(3);
+        
+        assert!(basic_price == 10000000, 0); // 0.1 APT
+        assert!(medium_price == 25000000, 0); // 0.25 APT
+        assert!(premium_price == 50000000, 0); // 0.5 APT
+        assert!(legendary_price == 100000000, 0); // 1 APT
+    }
+
+    #[test]
+    fun test_treasury_initialization() {
+        let owner = account::create_account_for_test(OWNER);
+        kitty_game::initialize(&owner);
+        
+        // Check treasury balance is 0 initially
+        let balance = kitty_game::get_treasury_balance();
+        assert!(balance == 0, 0);
+    }
+
+    #[test]
+    fun test_deployer_check() {
+        let owner = account::create_account_for_test(OWNER);
+        let user1 = account::create_account_for_test(USER1);
+        
+        // Check if deployer function works
+        let is_owner_deployer = kitty_game::is_deployer(OWNER);
+        let is_user1_deployer = kitty_game::is_deployer(USER1);
+        
+        assert!(is_owner_deployer == true, 0);
+        assert!(is_user1_deployer == false, 0);
     }
 } 

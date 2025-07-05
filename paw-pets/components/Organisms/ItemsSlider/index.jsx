@@ -7,6 +7,14 @@ import { SliderTab } from "@/components/Atoms/Slider";
 import { userContext } from "@/pages";
 import { GameContext } from "@/pages/_app";
 import useSound from "use-sound";
+import { addAccessoryWithPayment, ACCESSORY_CATEGORIES } from "@/util/kittyContract";
+import toast from 'react-hot-toast';
+
+const categoryKeys = Object.keys(ACCESSORY_CATEGORIES);
+function getRandomCategory() {
+  const idx = Math.floor(Math.random() * categoryKeys.length);
+  return ACCESSORY_CATEGORIES[categoryKeys[idx]].id;
+}
 
 const Grid = styled.div`
 display:grid;
@@ -77,6 +85,37 @@ export default function ItemsSlider({
                                     <ItemCard image={item.image} alt={item.name} />
                                     <Typography text={`x${item.count ? item.count : 0}`} weight={"400"} size={".9rem"} />
                                     <Typography text={item.name} weight={"500"} size={"1.2rem"} />
+                                    <button
+                                      style={{
+                                        marginTop: "0.5em",
+                                        padding: "0.4em 1em",
+                                        borderRadius: "8px",
+                                        border: "none",
+                                        background: "#ffb347",
+                                        color: "#222",
+                                        fontWeight: "bold",
+                                        cursor: "pointer"
+                                      }}
+                                      onClick={async (e) => {
+                                        e.stopPropagation();
+                                        // TODO: Replace with actual kittyId selection logic
+                                        const kittyId = 0; // You should get this from context or props
+                                        const randomCategory = getRandomCategory();
+                                        try {
+                                          const result = await addAccessoryWithPayment(kittyId, item.name, randomCategory);
+                                          if (result.success) {
+                                            toast.success(`🎉 Accessory "${item.name}" added as ${categoryKeys[randomCategory]}!`);
+                                          } else {
+                                            toast.error(`Failed: ${result.error || JSON.stringify(result)}`);
+                                          }
+                                        } catch (e) {
+                                          toast.error("Exception: " + JSON.stringify(e));
+                                          console.error(e);
+                                        }
+                                      }}
+                                    >
+                                      Add Accessory
+                                    </button>
                                  </GridItem>
                               })
                            }

@@ -6,6 +6,7 @@ import { OpacityBackgroundFade } from "@/components/Atoms/Popup";
 import { useContext, useState } from "react";
 import { userContext } from "@/pages";
 import { playWithKitty } from '@/util/kittyContract';
+import toast from 'react-hot-toast';
 
 const BtnCont = styled.div`
     // margin-top: 1em;
@@ -74,8 +75,10 @@ export default function Offerings(
                                           try {
                                             await playWithKitty(selectedKitty.id);
                                             setPlayMsg('You played with your kitty! 😺');
+                                            toast.success('You played with your kitty! 😺');
                                           } catch (e) {
                                             setPlayMsg('Something went wrong. Try again!');
+                                            toast.error('Something went wrong. Try again!');
                                           }
                                           setIsPlaying(false);
                                         }}

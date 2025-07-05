@@ -44,12 +44,15 @@ export default function CatCard({
    onClick = () => { },
    bg
 }) {
+   console.log(catData)
+
+   if (!catData) return null;
    return (
       <CatCardDiv onClick={onClick} bg={bg}>
          <CatCardContent>
             <CatTextDiv>
                <Typography
-                  text={`no. ${catData.id.toString().padStart(2, '0')}`}
+                  text={`no. ${catData?.id?.toString().padStart(2, '0')}`}
                   color={"var(--secondary-accent)"}
                   weight={"500"}
                />

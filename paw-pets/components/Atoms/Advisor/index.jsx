@@ -8,6 +8,7 @@ import useSound from "use-sound";
 import { GameContext } from "@/pages/_app";
 import catMeow from "@/data/meow.json";
 import { sleepKitty, cleanKitty } from "@/util/kittyContract";
+import toast from 'react-hot-toast';
 
 const spin = keyframes`
   100% { transform: rotate(360deg); }
@@ -87,9 +88,11 @@ export default function Advisor({ selectedKitty, isPlaying }) {
       try {
          await sleepKitty(selectedKitty.id);
          setSleepMsg("Kitty is now well rested!");
+         toast.success("😺 Kitty is now well rested!");
          // Optionally: refresh kitty stats here
       } catch (e) {
          setSleepMsg("Something went wrong. Try again!");
+         toast.error("Something went wrong. Try again!");
       }
       setTimeout(() => setSleeping(false), 2000);
    };
@@ -101,9 +104,11 @@ export default function Advisor({ selectedKitty, isPlaying }) {
       try {
          await cleanKitty(selectedKitty.id);
          setCleanMsg("Kitty is now squeaky clean!");
+         toast.success("🛁 Kitty is now squeaky clean!");
          // Optionally: refresh kitty stats here
       } catch (e) {
          setCleanMsg("Something went wrong. Try again!");
+         toast.error("Something went wrong. Try again!");
       }
       setTimeout(() => setCleaning(false), 2000);
    };

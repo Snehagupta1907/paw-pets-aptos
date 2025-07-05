@@ -3,6 +3,8 @@ module kitty_pet::kitty_game {
     use std::string::{Self, String};
     use std::vector;
     use aptos_framework::timestamp;
+    use aptos_framework::coin::{Self, Coin};
+    use aptos_framework::aptos_coin::AptosCoin;
 
     // Error codes
     const EKITTY_NOT_FOUND: u64 = 1;
@@ -11,10 +13,28 @@ module kitty_pet::kitty_game {
     const EKITTY_ALREADY_EXISTS: u64 = 4;
     const EINVALID_ACTION: u64 = 5;
     const EKITTY_STORE_NOT_INITIALIZED: u64 = 6;
-
+    const EINSUFFICIENT_PAYMENT: u64 = 7;
+    const EACCESSORY_NOT_FOUND: u64 = 8;
+    const ENOT_DEPLOYER: u64 = 9;
 
     // Module address for the kitty store
     const KITTY_STORE_ADDRESS: address = @kitty_pet;
+
+    // Accessory prices in octas (1 APT = 100,000,000 octas)
+    const ACCESSORY_PRICES: vector<u64> = vector[
+        10000000,  // 0.1 APT - Basic accessories (collar, tag)
+        25000000,  // 0.25 APT - Medium accessories (hat, scarf)
+        50000000,  // 0.5 APT - Premium accessories (crown, wings)
+        100000000, // 1 APT - Legendary accessories (magic wand, halo)
+    ];
+
+    // Accessory categories for pricing
+    enum AccessoryCategory has drop, store {
+        Basic,      // 0.1 APT
+        Medium,     // 0.25 APT
+        Premium,    // 0.5 APT
+        Legendary,  // 1 APT
+    }
 
     enum KittyStage has drop, store {
         Baby,    // 0-100 XP
@@ -63,7 +83,12 @@ module kitty_pet::kitty_game {
         total_kitties: u64,
     }
 
-    // Initialize the kitty store
+    // Treasury to hold collected APT tokens
+    struct Treasury has key {
+        coins: Coin<AptosCoin>,
+    }
+
+    // Initialize the kitty store and treasury
     public entry fun initialize(account: &signer) {
         // Only allow initialization by the module publisher
         assert!(signer::address_of(account) == @kitty_pet, EKITTY_STORE_NOT_INITIALIZED);
@@ -74,6 +99,12 @@ module kitty_pet::kitty_game {
             total_kitties: 0,
         };
         move_to(account, store);
+
+        // Initialize treasury with 0 coins
+        let treasury = Treasury {
+            coins: coin::zero<AptosCoin>(),
+        };
+        move_to(account, treasury);
     }
 
     // Create a new kitty using Move 2.0 features
@@ -194,7 +225,41 @@ module kitty_pet::kitty_game {
         check_level_up(kitty);
     }
 
-    // Add accessory to kitty
+    // Add accessory to kitty with payment
+    public entry fun add_accessory_with_payment(
+        account: &signer, 
+        kitty_id: u64, 
+        accessory: String, 
+        category: u8,  // 0=Basic, 1=Medium, 2=Premium, 3=Legendary
+        time: u64
+    ) acquires KittyStore, Treasury {
+        let store = borrow_global_mut<KittyStore>(KITTY_STORE_ADDRESS);
+        let kitty = find_kitty_by_id(&mut store.kitties, kitty_id);
+        assert!(kitty.owner == signer::address_of(account), EKITTY_NOT_OWNER);
+
+        // Validate category
+        assert!(category < 4, EINVALID_ACTION);
+        
+        // Get required payment amount
+        let required_payment = *vector::borrow(&ACCESSORY_PRICES, (category as u64));
+        
+        // Withdraw payment from user's account
+        let payment = coin::withdraw<AptosCoin>(account, required_payment);
+
+        // Add payment to treasury
+        let treasury = borrow_global_mut<Treasury>(KITTY_STORE_ADDRESS);
+        coin::merge(&mut treasury.coins, payment);
+
+        // Add accessory to kitty
+        vector::push_back(&mut kitty.accessories, accessory);
+        kitty.happiness = if (kitty.happiness + 5 > 100) { 100 } else { kitty.happiness + 5 };
+        kitty.experience = kitty.experience + 3;
+        kitty.last_played = time;
+
+        update_kitty_mood(kitty);
+    }
+
+    // Legacy function for free accessories (for testing/backward compatibility)
     public entry fun add_accessory(account: &signer, kitty_id: u64, accessory: String, time: u64) acquires KittyStore {
         let store = borrow_global_mut<KittyStore>(KITTY_STORE_ADDRESS);
         let kitty = find_kitty_by_id(&mut store.kitties, kitty_id);
@@ -206,6 +271,27 @@ module kitty_pet::kitty_game {
         kitty.last_played = time;
 
         update_kitty_mood(kitty);
+    }
+
+    // Withdraw funds from treasury (only deployer can call)
+    public entry fun withdraw_treasury(account: &signer, amount: u64) acquires Treasury {
+        assert!(signer::address_of(account) == @kitty_pet, ENOT_DEPLOYER);
+        
+        let treasury = borrow_global_mut<Treasury>(KITTY_STORE_ADDRESS);
+        let available_amount = coin::value(&treasury.coins);
+        assert!(amount <= available_amount, EINSUFFICIENT_BALANCE);
+        
+        let coins_to_withdraw = coin::extract(&mut treasury.coins, amount);
+        coin::deposit(signer::address_of(account), coins_to_withdraw);
+    }
+
+    // Withdraw all funds from treasury (only deployer can call)
+    public entry fun withdraw_all_treasury(account: &signer) acquires Treasury {
+        assert!(signer::address_of(account) == @kitty_pet, ENOT_DEPLOYER);
+        
+        let treasury = borrow_global_mut<Treasury>(KITTY_STORE_ADDRESS);
+        let all_coins = coin::extract_all(&mut treasury.coins);
+        coin::deposit(signer::address_of(account), all_coins);
     }
 
     // Get kitty by ID
@@ -368,5 +454,42 @@ module kitty_pet::kitty_game {
         let store = borrow_global<KittyStore>(KITTY_STORE_ADDRESS);
         let kitty = find_kitty_by_id_immutable(&store.kitties, kitty_id);
         kitty.accessories
+    }
+
+    // Get treasury balance
+    #[view]
+    public fun get_treasury_balance(): u64 acquires Treasury {
+        let treasury = borrow_global<Treasury>(KITTY_STORE_ADDRESS);
+        coin::value(&treasury.coins)
+    }
+
+    // Get accessory price by category
+    #[view]
+    public fun get_accessory_price(category: u8): u64 {
+        assert!(category < 4, EINVALID_ACTION);
+        *vector::borrow(&ACCESSORY_PRICES, (category as u64))
+    }
+
+    // Get all accessory prices
+    #[view]
+    public fun get_all_accessory_prices(): vector<u64> {
+        ACCESSORY_PRICES
+    }
+
+    // Check if user is deployer
+    #[view]
+    public fun is_deployer(account: address): bool {
+        account == @kitty_pet
+    }
+
+    // Create Treasury resource if missing (recovery function)
+    public entry fun create_treasury(account: &signer) {
+        assert!(signer::address_of(account) == @kitty_pet, ENOT_DEPLOYER);
+        if (!exists<Treasury>(KITTY_STORE_ADDRESS)) {
+            let treasury = Treasury {
+                coins: coin::zero<AptosCoin>(),
+            };
+            move_to(account, treasury);
+        }
     }
 } 

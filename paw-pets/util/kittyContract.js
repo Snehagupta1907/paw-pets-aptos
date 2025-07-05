@@ -815,3 +815,191 @@ export const CONTRACT_CONFIG = {
   fullPath: FULL_MODULE_PATH,
   network: APTOS_NETWORK
 };
+
+// Add accessory with payment
+export async function addAccessoryWithPayment(
+    kittyId, 
+    accessoryName, 
+    category // 0=Basic, 1=Medium, 2=Premium, 3=Legendary
+) {
+  console.log({kittyId, accessoryName, category})
+    try {
+        const payload = {
+            function: `${FULL_MODULE_PATH}::add_accessory_with_payment`,
+            type_arguments: [],
+            arguments: [
+                kittyId.toString(),
+                accessoryName,
+                category.toString(),
+                Math.floor(Date.now() / 1000).toString()
+            ]
+        };
+
+        const transaction = await submitTransaction(payload);
+        
+        return {
+            success: true,
+            hash: transaction.hash
+        };
+    } catch (error) {
+        console.error('Error adding accessory with payment:', error);
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+}
+
+// Get accessory price by category
+export async function getAccessoryPrice(category) {
+    try {
+        const payload = {
+            function: `${FULL_MODULE_PATH}::get_accessory_price`,
+            type_arguments: [],
+            arguments: [category.toString()]
+        };
+
+        const response = await window.petra.view(payload);
+        return response[0]; // Returns price in octas
+    } catch (error) {
+        console.error('Error getting accessory price:', error);
+        return null;
+    }
+}
+
+// Get all accessory prices
+export async function getAllAccessoryPrices() {
+    try {
+        const payload = {
+            function: `${FULL_MODULE_PATH}::get_all_accessory_prices`,
+            type_arguments: [],
+            arguments: []
+        };
+
+        const response = await window.petra.view(payload);
+        return response[0]; // Returns array of prices in octas
+    } catch (error) {
+        console.error('Error getting all accessory prices:', error);
+        return null;
+    }
+}
+
+// Get treasury balance
+export async function getTreasuryBalance() {
+    try {
+        const payload = {
+            function: `${FULL_MODULE_PATH}::get_treasury_balance`,
+            type_arguments: [],
+            arguments: []
+        };
+
+        const response = await window.petra.view(payload);
+        return response[0]; // Returns balance in octas
+    } catch (error) {
+        console.error('Error getting treasury balance:', error);
+        return null;
+    }
+}
+
+// Check if current user is deployer
+export async function isDeployer(userAddress) {
+    try {
+        const payload = {
+            function: `${FULL_MODULE_PATH}::is_deployer`,
+            type_arguments: [],
+            arguments: [userAddress]
+        };
+
+        const response = await window.petra.view(payload);
+        return response[0]; // Returns boolean
+    } catch (error) {
+        console.error('Error checking deployer status:', error);
+        return false;
+    }
+}
+
+// Withdraw treasury funds (only deployer can call)
+export async function withdrawTreasury(amount) {
+    try {
+        const payload = {
+            function: `${FULL_MODULE_PATH}::withdraw_treasury`,
+            type_arguments: [],
+            arguments: [amount.toString()]
+        };
+
+        const transaction = await submitTransaction(payload);
+        
+        return {
+            success: true,
+            hash: transaction.hash
+        };
+    } catch (error) {
+        console.error('Error withdrawing treasury:', error);
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+}
+
+// Withdraw all treasury funds (only deployer can call)
+export async function withdrawAllTreasury() {
+    try {
+        const payload = {
+            function: `${FULL_MODULE_PATH}::withdraw_all_treasury`,
+            type_arguments: [],
+            arguments: []
+        };
+
+        const transaction = await submitTransaction(payload);
+        
+        return {
+            success: true,
+            hash: transaction.hash
+        };
+    } catch (error) {
+        console.error('Error withdrawing all treasury:', error);
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+}
+
+// Helper function to convert APT to octas
+export function aptToOctas(aptAmount) {
+    return Math.floor(aptAmount * 100000000);
+}
+
+// Helper function to convert octas to APT
+export function octasToApt(octasAmount) {
+    return octasAmount / 100000000;
+}
+
+// Accessory categories and their prices
+export const ACCESSORY_CATEGORIES = {
+    BASIC: {
+        id: 0,
+        name: 'Basic',
+        price: 0.1, // APT
+        examples: ['Collar', 'Tag', 'Bandana']
+    },
+    MEDIUM: {
+        id: 1,
+        name: 'Medium',
+        price: 0.25, // APT
+        examples: ['Hat', 'Scarf', 'Bow Tie']
+    },
+    PREMIUM: {
+        id: 2,
+        name: 'Premium',
+        price: 0.5, // APT
+        examples: ['Crown', 'Wings', 'Magic Wand']
+    },
+    LEGENDARY: {
+        id: 3,
+        name: 'Legendary',
+        price: 1.0, // APT
+        examples: ['Halo', 'Dragon Scale', 'Time Machine']
+    }
+};

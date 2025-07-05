@@ -4,6 +4,7 @@ import Head from 'next/head'
 import { AnimatePresence, LazyMotion, domMax } from 'framer-motion';
 import { createContext, useState } from 'react';
 import { AutoConnectProvider } from '@/components/Atoms/WalletConnect/AutoConnectProvider';
+import { Toaster } from 'react-hot-toast';
 
 const fredoka = Fredoka({ subsets: ['latin'] })
 
@@ -34,6 +35,27 @@ export default function App({ Component, pageProps }) {
         </LazyMotion>
       </GameContext.Provider>
     </AutoConnectProvider>
+
+    <Toaster
+      position="top-center"
+      toastOptions={{
+        style: {
+          borderRadius: '16px',
+          background: '#fff7e6',
+          color: '#ffb347',
+          fontWeight: 'bold',
+          fontFamily: 'Comic Sans MS, Comic Sans, cursive',
+          boxShadow: '0 4px 16px rgba(255,179,71,0.15)',
+          border: '2px solid #ffb347',
+          padding: '1em 1.5em',
+          fontSize: '1.1em'
+        },
+        iconTheme: {
+          primary: '#ffb347',
+          secondary: '#fff7e6',
+        },
+      }}
+    />
 
   </>
 }

@@ -3,12 +3,12 @@ import styled from "styled-components";
 import ItemCard from "@/components/Atoms/ItemCard";
 import Typography from "@/components/Atoms/Text";
 import { useState, useContext } from "react";
-import TreatsData from "@/data/treats.json"
 import { SliderTab } from "@/components/Atoms/Slider";
 import { userContext } from "@/pages";
 import { GameContext } from "@/pages/_app";
 import useSound from "use-sound";
 import { feedKitty } from "@/util/kittyContract";
+import toast from 'react-hot-toast';
 
 
 const Grid = styled.div`
@@ -92,6 +92,7 @@ export default function TreatsSlider({
                                             try {
                                                 await feedKitty(selectedKitty.id);
                                                 setFeedMsg('You fed your kitty! 😺');
+                                                toast.success('You fed your kitty! 😺');
                                                 // Decrement treat count
                                                 const updatedTreats = [...currentTreats];
                                                 updatedTreats[i].count -= 1;
@@ -99,6 +100,7 @@ export default function TreatsSlider({
                                                 // Optionally: refresh kitty data here
                                             } catch (e) {
                                                 setFeedMsg('Something went wrong. Try again!');
+                                                toast.error('Something went wrong. Try again!');
                                             }
                                             setFeedLoading(false);
                                         }}

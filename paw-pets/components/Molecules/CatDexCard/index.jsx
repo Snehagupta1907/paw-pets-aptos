@@ -120,7 +120,7 @@ export default function CatDexCard({
                   <>
                      <CatDexCardTitle>
                         <Typography
-                           text={`no. ${catData.id.toString().padStart(2, '0')}`}
+                           text={`no. ${catData?.id?.toString().padStart(2, '0')}`}
                            weight={500}
                         />
                         <CatDexCardHead>
@@ -129,24 +129,24 @@ export default function CatDexCard({
                                  fontSize: '1.5rem', fontWeight: "600"
                               }}
                            >
-                              {catData.breedName}
+                              {catData?.breedName}
                            </StrokedText>
                         </CatDexCardHead>
                         <Typography
-                           text={`appearances: ${catData.count ? catData.count : 0}`}
+                           text={`appearances: ${catData?.count ? catData?.count : 0}`}
                            weight={500}
                         />
                      </CatDexCardTitle>
                      <EmptySpace axis={"vertical"} size={15} />
                      <CatDexCardContent>
                         <CatDexImage>
-                           <Image src={`${catData.imgThumb}`} width={300} height={300} alt="cat" style={{ borderRadius: "50%", textAlign: "center" }} />
+                           <Image src={`${catData?.imgThumb}`} width={300} height={300} alt="cat" style={{ borderRadius: "50%", textAlign: "center" }} />
                         </CatDexImage>
                         <CatDexCardText>
                            {/* Show Stage and Mood if available */}
-                           {(catData.stage?.name || catData.mood?.name) && (
+                           {(catData?.stage?.name || catData?.mood?.name) && (
                               <div style={{ marginBottom: '1em' }}>
-                                 {catData.stage?.name && (
+                                 {catData?.stage?.name && (
                                     <Typography
                                        text={`Stage: ${catData.stage.name}`}
                                        size={"1.1rem"}
@@ -154,7 +154,7 @@ export default function CatDexCard({
                                        weight={"600"}
                                     />
                                  )}
-                                 {catData.mood?.name && (
+                                 {catData?.mood?.name && (
                                     <Typography
                                        text={`Mood: ${catData.mood.name}`}
                                        size={"1.1rem"}
@@ -173,7 +173,7 @@ export default function CatDexCard({
                               />
                               <CatDexCardContentText>
                                  <Typography
-                                    text={catData.breedName}
+                                    text={catData?.breedName}
                                     size={"1.3rem"}
                                  />
                               </CatDexCardContentText>
@@ -187,7 +187,7 @@ export default function CatDexCard({
                               />
                               <CatDexCardContentText>
                                  <Typography
-                                    text={catData.stage?.name || "-"}
+                                    text={catData?.stage?.name || "-"}
                                     size={"1.3rem"}
                                  />
                               </CatDexCardContentText>
