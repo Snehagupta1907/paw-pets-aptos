@@ -1,4 +1,4 @@
-# 🐱 Aptos Pet - Move 2.0 Full Stack Development Guide
+# 🐱 PAW PETS
 
 A complete decentralized pet care game built on the Aptos blockchain using Move 2.0 smart contracts and a modern Next.js frontend.
 
