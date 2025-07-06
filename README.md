@@ -34,7 +34,6 @@ Aptos Pet is a comprehensive blockchain-based pet care game where users can:
 - 📈 **Progression**: Experience-based leveling system
 - 🎭 **Mood System**: Dynamic pet moods based on care actions
 - 🎨 **Customization**: Accessories and visual customization
-- 🌤️ **Weather Integration**: Dynamic backgrounds based on real weather
 
 ### Blockchain Features
 - 🔐 **Wallet Authentication**: Secure login via Petra wallet
@@ -47,7 +46,6 @@ Aptos Pet is a comprehensive blockchain-based pet care game where users can:
 - 🎵 **Audio System**: Background music and sound effects
 - 🎮 **Interactive UI**: Smooth animations and responsive design
 - 📱 **Mobile Responsive**: Works on all device sizes
-- 🌍 **Weather API**: Real-time weather integration
 - 🏆 **Leaderboards**: Community rankings and achievements
 
 ## 🛠️ Technical Stack
