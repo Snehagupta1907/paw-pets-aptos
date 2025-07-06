@@ -62,6 +62,7 @@ module kitty_pet::kitty_pet_tests {
         assert!(hunger == 80, 0); // 50 + 30
         assert!(energy == 100, 0); // 100 + 10 (capped at 100)
         assert!(happiness == 90, 0); // 75 + 15
+        assert!(cleanliness == 80, 0); // 100 - 20 (feeding makes dirty)
     }
 
     #[test]
@@ -80,6 +81,7 @@ module kitty_pet::kitty_pet_tests {
         assert!(hunger == 40, 0); // 50 - 10
         assert!(energy == 85, 0); // 100 - 15
         assert!(happiness == 100, 0); // 75 + 25 (capped at 100)
+        assert!(cleanliness == 90, 0); // 100 - 10 (playing makes dirty)
     }
 
     #[test]
@@ -186,6 +188,40 @@ module kitty_pet::kitty_pet_tests {
     }
 
     #[test]
+    fun test_dirt_accumulation() {
+        let owner = account::create_account_for_test(OWNER);
+        kitty_game::initialize(&owner);
+        
+        let kitty_name = string::utf8(b"Fluffy");
+        kitty_game::create_kitty(&owner, kitty_name, 0);
+        
+        // Initial cleanliness should be 100
+        let (_, _, _, _, cleanliness) = kitty_game::get_kitty_stats(0);
+        assert!(cleanliness == 100, 0);
+        
+        // Feed 3 times (should reduce cleanliness by 60: 100 - 60 = 40)
+        kitty_game::feed_kitty(&owner, 0, 0);
+        kitty_game::feed_kitty(&owner, 0, 0);
+        kitty_game::feed_kitty(&owner, 0, 0);
+        
+        let (_, _, _, _, cleanliness) = kitty_game::get_kitty_stats(0);
+        assert!(cleanliness == 40, 0); // 100 - (3 * 20) = 40
+        
+        // Play 2 times (should reduce cleanliness by 20: 40 - 20 = 20)
+        kitty_game::play_with_kitty(&owner, 0, 0);
+        kitty_game::play_with_kitty(&owner, 0, 0);
+        
+        let (_, _, _, _, cleanliness) = kitty_game::get_kitty_stats(0);
+        assert!(cleanliness == 20, 0); // 40 - (2 * 10) = 20
+        
+        // Clean the kitty (should restore to 100)
+        kitty_game::clean_kitty(&owner, 0, 0);
+        
+        let (_, _, _, _, cleanliness) = kitty_game::get_kitty_stats(0);
+        assert!(cleanliness == 100, 0);
+    }
+
+    #[test]
     fun test_multiple_kitties() {
         let owner = account::create_account_for_test(OWNER);
         kitty_game::initialize(&owner);
@@ -205,16 +241,15 @@ module kitty_pet::kitty_pet_tests {
     }
 
     #[test]
-    #[expected_failure(abort_code = kitty_game::EKITTY_NOT_FOUND)]
+    #[expected_failure(abort_code = kitty_game::EKITTY_NOT_OWNER)]
     fun test_unauthorized_action() {
         let owner = account::create_account_for_test(OWNER);
         let user1 = account::create_account_for_test(USER1);
         
         kitty_game::initialize(&owner);
-        kitty_game::initialize(&user1); // Initialize store for user1
         kitty_game::create_kitty(&owner, string::utf8(b"Fluffy"), 0);
         
-        // Try to feed kitty with wrong account
+        // Try to feed kitty with wrong account (user1 trying to feed owner's kitty)
         kitty_game::feed_kitty(&user1, 0, 0);
     }
 

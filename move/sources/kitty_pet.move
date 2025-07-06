@@ -162,6 +162,10 @@ module kitty_pet::kitty_game {
         kitty.hunger = if (kitty.hunger + 30 > 100) { 100 } else { kitty.hunger + 30 };
         kitty.energy = if (kitty.energy + 10 > 100) { 100 } else { kitty.energy + 10 };
         kitty.happiness = if (kitty.happiness + 15 > 100) { 100 } else { kitty.happiness + 15 };
+        
+        // Feeding makes kitty dirty (decrease cleanliness by 20)
+        kitty.cleanliness = if (kitty.cleanliness < 20) { 0 } else { kitty.cleanliness - 20 };
+        
         kitty.last_fed = time;
         kitty.experience = kitty.experience + 10;
         kitty.total_care_actions = kitty.total_care_actions + 1;
@@ -183,6 +187,10 @@ module kitty_pet::kitty_game {
         kitty.happiness = if (kitty.happiness + 25 > 100) { 100 } else { kitty.happiness + 25 };
         kitty.energy = if (kitty.energy < 15) { 0 } else { kitty.energy - 15 };
         kitty.hunger = if (kitty.hunger < 10) { 0 } else { kitty.hunger - 10 };
+        
+        // Playing makes kitty dirty (decrease cleanliness by 10)
+        kitty.cleanliness = if (kitty.cleanliness < 10) { 0 } else { kitty.cleanliness - 10 };
+        
         kitty.last_played = time;
         kitty.experience = kitty.experience + 15;
         kitty.total_care_actions = kitty.total_care_actions + 1;
@@ -368,6 +376,8 @@ module kitty_pet::kitty_game {
             kitty.mood = KittyMood::Tired;
         } else if (kitty.health < 30) {
             kitty.mood = KittyMood::Sick;
+        } else if (kitty.cleanliness < 30) {
+            kitty.mood = KittyMood::Sick; // Dirty kitties appear sick
         } else if (kitty.happiness > 80 && kitty.energy > 50) {
             kitty.mood = KittyMood::Playful;
         } else {
