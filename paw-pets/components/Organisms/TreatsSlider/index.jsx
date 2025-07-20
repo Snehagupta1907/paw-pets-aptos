@@ -15,6 +15,11 @@ const Grid = styled.div`
 display:grid;
 grid-template-columns:repeat(6, 1fr);
 gap:2em;
+
+@media screen and (max-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
 `
 const GridItem = styled.div`
 display: flex;
@@ -22,6 +27,9 @@ align-items: center;
 justify-content: center;
 flex-direction:column;
 
+@media screen and (max-width: 768px) {
+    gap: 0.3rem;
+}
 `
 export default function TreatsSlider({
     active,

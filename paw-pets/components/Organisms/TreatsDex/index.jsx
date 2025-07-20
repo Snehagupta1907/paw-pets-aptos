@@ -14,6 +14,11 @@ display:grid;
 grid-template-columns: repeat(2, 1fr);
 justify-items:center;
 gap:3em;
+
+@media screen and (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+}
 `
 
 export default function TreatsDex({
@@ -154,6 +159,7 @@ export default function TreatsDex({
                             transition={{ duration: .8, ease: "easeInOut" }}
                             exit={{ y: -500 }}
                             btnClick={() => { }}
+                            onClose={() => { setActivePop(false) }}
                             // Optionally add a spinner/animation here
                         >
                             <div style={{textAlign:'center',marginTop:'1em'}}>
@@ -162,9 +168,9 @@ export default function TreatsDex({
                             </div>
                         </PopupPrompt>
                     ) : cooked ?
-                        <PopupPrompt type="treats" oneBtn btnText1="OKAY" poptext={popText} treat={treat.name} initial={{ y: -500 }} animate={{ y: "35vh" }} transition={{ duration: .8, ease: "easeInOut" }} exit={{ y: -500 }} btnClick={() => { setActivePop(false) }} btnClick1={() => cookTreat(treat)} />
+                        <PopupPrompt type="treats" oneBtn btnText1="OKAY" poptext={popText} treat={treat.name} initial={{ y: -500 }} animate={{ y: "35vh" }} transition={{ duration: .8, ease: "easeInOut" }} exit={{ y: -500 }} btnClick={() => { setActivePop(false) }} btnClick1={() => cookTreat(treat)} onClose={() => { setActivePop(false) }} />
                         :
-                        <PopupPrompt type="treats" btnText1="NO" btnText2="YES" poptext={`cook a ${treat.name}`} treat={treat.name} initial={{ y: -500 }} animate={{ y: "35vh" }} transition={{ duration: .8, ease: "easeInOut" }} exit={{ y: -500 }} btnClick={() => { setActivePop(false) }} btnClick1={() => cookTreat(treat)} />
+                        <PopupPrompt type="treats" btnText1="NO" btnText2="YES" poptext={`cook a ${treat.name}`} treat={treat.name} initial={{ y: -500 }} animate={{ y: "35vh" }} transition={{ duration: .8, ease: "easeInOut" }} exit={{ y: -500 }} btnClick={() => { setActivePop(false) }} btnClick1={() => cookTreat(treat)} onClose={() => { setActivePop(false) }} />
                     }
                 </>}
             </AnimatePresence>

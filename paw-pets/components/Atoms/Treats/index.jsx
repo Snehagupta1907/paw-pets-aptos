@@ -9,6 +9,11 @@ pointer-events:none;
 const TreatImage = styled(Image)`
 pointer-events:none;
 transform:translate(10vw, 8vh);
+
+@media screen and (max-width: 768px) {
+  max-width: 60px;
+  max-height: 60px;
+}
 `
 export default function Treats({
     image,

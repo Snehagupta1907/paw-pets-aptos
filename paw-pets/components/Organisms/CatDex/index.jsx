@@ -15,6 +15,11 @@ gap:3em;
 @media (max-width: 1280px) {
    // grid-template-columns: repeat(1, 1fr);
  }
+
+@media screen and (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+}
 `
 const GridItem = styled.div`
 display:grid
@@ -31,6 +36,15 @@ border-radius: 1em;
 border: 3px solid var(--border-hard);
 border-bottom: 9px solid var(--border-hard);
 margin-bottom: 2em;
+
+@media screen and (max-width: 768px) {
+    padding: 1rem;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 0.8rem;
+    border: 2px solid var(--border-hard);
+    border-bottom: 6px solid var(--border-hard);
+}
 `
 
 const CreateKittyInput = styled.input`
@@ -52,6 +66,13 @@ transition: all 0.2s ease;
 &::placeholder {
   color: var(--secondary-accent);
   opacity: 0.7;
+}
+
+@media screen and (max-width: 768px) {
+    padding: 0.6em 1em;
+    font-size: 0.9rem;
+    border: 2px solid var(--border-hard);
+    border-radius: 0.6em;
 }
 `
 

@@ -29,6 +29,11 @@ transition: all ease-in-out ${props => props.transitionduration || ".2"}s;
    transform:scale(1.1);
 }
 animation: ${props => props.isPlaying ? spin : "none"} 1s linear infinite;
+
+@media screen and (max-width: 768px) {
+  max-width: 100px;
+  max-height: 100px;
+}
 `
 
 const CatDiv = styled.div`

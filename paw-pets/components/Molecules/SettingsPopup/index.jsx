@@ -17,6 +17,16 @@ const PopupCont = styled.div`
     min-height: 245px;
     justify-content: space-around;
     cursor:auto;
+
+    @media screen and (max-width: 768px) {
+        width: 90vw;
+        max-width: 350px;
+        min-height: 200px;
+        padding: 1rem;
+        border-radius: 1rem;
+        border: 2px solid var(--border);
+        border-bottom: 6px solid var(--border);
+    }
 `
 
 const BtnCont = styled.div`
@@ -26,6 +36,14 @@ const BtnCont = styled.div`
     flex-direction: row;
     gap: 1em;
     align-self:flex-start;
+
+    @media screen and (max-width: 768px) {
+        margin: 0.5rem;
+        gap: 0.5rem;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
 `
 const CusHr = styled.div`
     width: 18em;
@@ -34,17 +52,33 @@ const CusHr = styled.div`
     margin: 0.5em;
     border-radius: 2px;
     border: 0;
+
+    @media screen and (max-width: 768px) {
+        width: 100%;
+        max-width: 250px;
+        height: 2px;
+        margin: 0.3rem;
+    }
 `
 const BotCont = styled.div`
     display:flex;
     flex-direction: column;
     align-items: center;
     padding: 0 0 0.5em 0;
+
+    @media screen and (max-width: 768px) {
+        padding: 0 0 0.3rem 0;
+        width: 100%;
+    }
 `
 const AudCont = styled.div`
 display:flex;
 flex-direction: column;
 align-items: flex-start;
+
+@media screen and (max-width: 768px) {
+    width: 100%;
+}
 `
 
 const AudBar = styled.div`
@@ -54,6 +88,13 @@ const AudBar = styled.div`
     margin-top: 0.5em;
     border-radius: 5px;
     border: 0;
+
+    @media screen and (max-width: 768px) {
+        width: 100%;
+        max-width: 200px;
+        height: 0.15em;
+        margin-top: 0.3em;
+    }
 `
 
 const DisplayWallet = styled.div`
@@ -71,6 +112,16 @@ const DisplayWallet = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+
+    @media screen and (max-width: 768px) {
+        width: 100%;
+        max-width: 250px;
+        height: 2.5em;
+        padding: 1rem;
+        margin: 0.3rem;
+        margin-top: 0.3rem;
+        border-radius: 1rem;
+    }
 `
 
 const ButtonDiv = styled.div`

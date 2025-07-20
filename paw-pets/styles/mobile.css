@@ -1,0 +1,424 @@
+/* Mobile-specific styles - Only applied on mobile devices */
+@media screen and (max-width: 768px) {
+  /* Mobile-specific variables */
+  :root {
+    --mobile-padding: 1rem;
+    --mobile-icon-size: 60px;
+    --mobile-text-size: 0.9rem;
+    --mobile-button-size: 50px;
+  }
+
+  /* Mobile layout adjustments */
+  .main {
+    padding: var(--mobile-padding);
+    min-height: 100vh;
+    min-width: 100vw;
+  }
+
+  /* Mobile GameArea adjustments */
+  .game-area-mobile {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+  }
+
+  /* Mobile UserInterface adjustments */
+  .user-interface-mobile {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    padding: 1rem;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 44;
+  }
+
+  /* Mobile top icons layout */
+  .top-icons-mobile {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* Mobile bottom icons layout */
+  .bottom-icons-mobile {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    bottom: 0;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  /* Mobile profile row */
+  .profile-row-mobile {
+    background-color: rgba(254, 249, 237, 0.9);
+    padding: 0.5rem 1rem;
+    gap: 1rem;
+    border-radius: 1rem;
+    border: 0px solid var(--border-hard);
+    border-left: 3px solid var(--border-hard);
+    align-self: flex-start;
+    transition: all 0.15s ease-in-out;
+    display: flex;
+    align-items: center;
+    max-width: 200px;
+  }
+
+  .profile-row-mobile:hover {
+    border: 2px solid var(--border-hard);
+    background-color: var(--primary);
+  }
+
+  /* Mobile weather row */
+  .weather-row-mobile {
+    background-color: rgba(254, 249, 237, 0.9);
+    border: 0px solid var(--border-hard);
+    border-right: 3px solid var(--border-hard);
+    padding: 0.5rem 1rem;
+    gap: 1rem;
+    border-radius: 1rem;
+    align-self: flex-end;
+    display: flex;
+    transition: all 0.15s ease-in-out;
+    max-width: 180px;
+  }
+
+  .weather-row-mobile:hover {
+    background-color: var(--primary);
+    border: 2px solid var(--border-hard);
+  }
+
+  /* Mobile column icon */
+  .col-icon-mobile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    pointer-events: auto;
+    align-items: center;
+  }
+
+  /* Mobile row icon */
+  .row-icon-mobile {
+    pointer-events: auto;
+    display: flex;
+    gap: 0.5rem;
+    cursor: pointer;
+    align-items: center;
+  }
+
+  /* Mobile weather column */
+  .weather-col-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-self: flex-start;
+  }
+
+  /* Mobile weather div */
+  .weather-div-mobile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.2rem;
+    text-align: center;
+  }
+
+  /* Mobile text container */
+  .text-cont-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  /* Mobile setting icon */
+  .setting-icon-mobile {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  /* Mobile settings div */
+  .settings-div-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-self: flex-start;
+  }
+
+  /* Mobile slider icons */
+  .slider-icons-mobile {
+    position: absolute;
+  }
+
+  /* Mobile popup adjustments */
+  .popup-mobile {
+    width: 90vw;
+    max-width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  /* Mobile cat card adjustments */
+  .cat-card-mobile {
+    width: 90vw !important;
+    max-width: 350px;
+  }
+
+  /* Mobile treats slider adjustments */
+  .treats-slider-mobile {
+    width: 90vw;
+    max-width: 400px;
+  }
+
+  /* Mobile items slider adjustments */
+  .items-slider-mobile {
+    width: 90vw;
+    max-width: 400px;
+  }
+
+  /* Mobile offerings popup adjustments */
+  .offerings-popup-mobile {
+    width: 90vw;
+    max-width: 400px;
+  }
+
+  /* Mobile leaderboard adjustments */
+  .leaderboard-mobile {
+    width: 90vw;
+    max-width: 400px;
+  }
+
+  /* Mobile cat dex adjustments */
+  .cat-dex-mobile {
+    width: 90vw;
+    max-width: 400px;
+  }
+
+  /* Mobile weather popup adjustments */
+  .weather-popup-mobile {
+    width: 90vw;
+    max-width: 350px;
+  }
+
+  /* Mobile settings popup adjustments */
+  .settings-popup-mobile {
+    width: 90vw;
+    max-width: 350px;
+  }
+
+  /* Mobile background adjustments */
+  .background-mobile {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  /* Mobile cat positioning adjustments */
+  .cat-mobile {
+    position: absolute;
+    max-width: 80px;
+    max-height: 80px;
+  }
+
+  /* Mobile item positioning adjustments */
+  .item-mobile {
+    position: absolute;
+    max-width: 60px;
+    max-height: 60px;
+  }
+
+  /* Mobile treats positioning adjustments */
+  .treats-mobile {
+    position: absolute;
+    max-width: 60px;
+    max-height: 60px;
+  }
+
+  /* Mobile advisor adjustments */
+  .advisor-mobile {
+    position: absolute;
+    max-width: 100px;
+    max-height: 100px;
+  }
+
+  /* Mobile text size adjustments */
+  .mobile-text-small {
+    font-size: 0.8rem !important;
+  }
+
+  .mobile-text-medium {
+    font-size: 1rem !important;
+  }
+
+  .mobile-text-large {
+    font-size: 1.2rem !important;
+  }
+
+  /* Mobile button size adjustments */
+  .mobile-button-small {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .mobile-button-medium {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .mobile-button-large {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  /* Mobile spacing adjustments */
+  .mobile-gap-small {
+    gap: 0.3rem;
+  }
+
+  .mobile-gap-medium {
+    gap: 0.5rem;
+  }
+
+  .mobile-gap-large {
+    gap: 1rem;
+  }
+
+  /* Mobile padding adjustments */
+  .mobile-padding-small {
+    padding: 0.5rem;
+  }
+
+  .mobile-padding-medium {
+    padding: 1rem;
+  }
+
+  .mobile-padding-large {
+    padding: 1.5rem;
+  }
+
+  /* Mobile margin adjustments */
+  .mobile-margin-small {
+    margin: 0.5rem;
+  }
+
+  .mobile-margin-medium {
+    margin: 1rem;
+  }
+
+  .mobile-margin-large {
+    margin: 1.5rem;
+  }
+
+  /* Mobile border radius adjustments */
+  .mobile-border-radius-small {
+    border-radius: 0.5rem;
+  }
+
+  .mobile-border-radius-medium {
+    border-radius: 1rem;
+  }
+
+  .mobile-border-radius-large {
+    border-radius: 1.5rem;
+  }
+
+  /* Mobile scrollbar adjustments */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #F9D982;
+    border-radius: 0.5rem;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--button-medium);
+    border-radius: 0.5rem;
+    height: 0.5rem;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--border-hard);
+  }
+
+  /* Mobile touch improvements */
+  .mobile-touch-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Mobile safe area adjustments */
+  .mobile-safe-area {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Mobile landscape adjustments */
+  @media screen and (max-width: 768px) and (orientation: landscape) {
+    .mobile-landscape {
+      flex-direction: row;
+    }
+
+    .mobile-landscape-column {
+      flex-direction: column;
+    }
+  }
+
+  /* Mobile portrait adjustments */
+  @media screen and (max-width: 768px) and (orientation: portrait) {
+    .mobile-portrait {
+      flex-direction: column;
+    }
+
+    .mobile-portrait-row {
+      flex-direction: row;
+    }
+  }
+}
+
+/* Tablet adjustments */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .tablet-adjustments {
+    --mobile-padding: 1.5rem;
+    --mobile-icon-size: 80px;
+    --mobile-text-size: 1rem;
+    --mobile-button-size: 70px;
+  }
+}
+
+/* Large mobile adjustments */
+@media screen and (min-width: 481px) and (max-width: 768px) {
+  .large-mobile-adjustments {
+    --mobile-padding: 1.2rem;
+    --mobile-icon-size: 70px;
+    --mobile-text-size: 0.95rem;
+    --mobile-button-size: 60px;
+  }
+}
+
+/* Small mobile adjustments */
+@media screen and (max-width: 480px) {
+  .small-mobile-adjustments {
+    --mobile-padding: 0.8rem;
+    --mobile-icon-size: 50px;
+    --mobile-text-size: 0.85rem;
+    --mobile-button-size: 45px;
+  }
+} 

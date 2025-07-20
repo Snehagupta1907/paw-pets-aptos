@@ -16,6 +16,12 @@ gap:3em;
 height:550px;
 overflow-y:scroll;
 padding-right:1em;
+
+@media screen and (max-width: 768px) {
+    height: 400px;
+    gap: 1.5rem;
+    padding-right: 0.5rem;
+}
 `
 
 const LeaderboardRow = styled.tr`
@@ -40,6 +46,11 @@ border-radius: 10px;
 `
 const TableHead = styled.th`
 padding: 0.5em 2em;
+
+@media screen and (max-width: 768px) {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
+}
 `
 const TableData = styled.td`
 padding: 0.5em 2em;
@@ -54,6 +65,11 @@ border-top: ${props => props.border ? "4px var(--secondary-accent) solid" : "" }
    border-radius:0em 1em 1em 0em;
    border-right: ${props => props.border ? "4px var(--secondary-accent) solid" : "" };
 };
+
+@media screen and (max-width: 768px) {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
+}
 `
 const TableBody = styled.tbody`
 `

@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Typography from "@/components/Atoms/Text";
 import Image from "next/image";
 import Button from "@/components/Atoms/Button";
+import IconButton from "@/components/Atoms/IconButton";
 import { m } from "framer-motion";
 
 const PopupCont = styled(m.div)`
@@ -18,6 +19,26 @@ const PopupCont = styled(m.div)`
     position:absolute;
     z-index:55;
     min-width: 18.5em;
+    position: relative;
+
+    @media screen and (max-width: 768px) {
+        width: 90vw;
+        max-width: 350px;
+        min-height: 200px;
+        padding: 0.8rem;
+        border-radius: 1rem;
+        border: 2px solid var(--border);
+        border-bottom: 6px solid var(--border);
+        min-width: auto;
+    }
+`
+
+const CloseButton = styled.div`
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    z-index: 10;
 `
 
 const PopupText = styled.div`
@@ -25,6 +46,11 @@ const PopupText = styled.div`
     align-items: center;
     justify-content: center;
     margin: 0.5em;
+
+    @media screen and (max-width: 768px) {
+        margin: 0.3rem;
+        text-align: center;
+    }
 `
 
 const ImgCont = styled.div`
@@ -35,6 +61,12 @@ const ImgCont = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+
+    @media screen and (max-width: 768px) {
+        width: 100px;
+        height: 80px;
+        border-radius: 1rem;
+    }
 `
 
 const BtnCont = styled.div`
@@ -43,6 +75,13 @@ const BtnCont = styled.div`
     align-items: center;
     flex-direction: row;
     gap: 1em;
+
+    @media screen and (max-width: 768px) {
+        margin: 0.5rem;
+        gap: 0.5rem;
+        flex-direction: column;
+        width: 100%;
+    }
 `
 const LoginForm = styled.form`
     display:flex;
@@ -84,13 +123,24 @@ export default function PopupPrompt(
         animate,
         transition,
         exit,
-        id
+        id,
+        onClose
     }
 ) {
 
     return (
         <>
             <PopupCont initial={initial} animate={animate} transition={transition} exit={exit}>
+                {onClose && (
+                    <CloseButton onClick={onClose}>
+                        <IconButton
+                            image="/icons/exit.svg"
+                            alt="Close"
+                            width={30}
+                            height={30}
+                        />
+                    </CloseButton>
+                )}
                 <PopupText >
                     <Typography
                         text={poptext}
@@ -109,7 +159,7 @@ export default function PopupPrompt(
                 {type === "input" &&
                     <LoginForm onChange={onChange} name="forgot">
                         <InputInfo type="text" name="email" placeholder="enter email" />
-                        {/* <Button type="button" text="Forgot Password" onClick={handleForgotPassword} color="var(--border)" colorhover="var(--border-hard)" border="6px solid var(--border-hard)" borderradius={"2.2em"} padding={"1em 3em"} /> */}
+                        {/* <Button type="button" text="Forgot Password" onClick={handleForgotPassword} color="var(--border)" colorhover="var(--border-hard)" border="6px solid var(--border-hard)" borderradius={"2.2em"} padding={"1em 3em" /> */}
                     </LoginForm>
                 }
                 {oneBtn ?

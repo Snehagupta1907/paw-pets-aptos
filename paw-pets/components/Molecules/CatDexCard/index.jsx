@@ -29,6 +29,11 @@ align-items: flex-start;
 @media (max-width: 900px) {
    flex-direction: column;
 }
+
+@media screen and (max-width: 768px) {
+  flex-direction: column;
+  gap: 1rem;
+}
 `
 const CatDexImage = styled.div`
 display: flex;
@@ -42,6 +47,11 @@ gap: 1em;
 margin-left: 2.5em;
 @media (max-width: 900px) {
    margin-left: 0;
+}
+
+@media screen and (max-width: 768px) {
+  margin-left: 0;
+  gap: 0.5rem;
 }
 `
 const CatDexCardContentText = styled.div`

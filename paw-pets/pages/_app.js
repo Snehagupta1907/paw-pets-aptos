@@ -15,10 +15,13 @@ export default function App({ Component, pageProps }) {
   return <>
     <Head>
       <meta name="description" content="Paw Pets is a cozy cat web application to help you feel at ease. Meow meow." />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
       <meta content="/icons/advisor.svg" property='og:image' />
       <meta property="og:description" content="Paw Pets is a cozy cat web application to help you feel at ease. Meow meow." />
       <link rel="icon" href="/icons/advisor_icon.svg" />
+      <meta name="theme-color" content="#FEF9ED" />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     </Head>
     <style jsx global>{`
         html, button, ::placeholder, input {

@@ -25,6 +25,11 @@ transition: all ease-in-out ${props => props.transitionduration || "0"}s, transf
    filter: drop-shadow(5px 5px 3px rgba(0, 0, 0, 0.2));
    transform:scale(1.2);
 }
+
+@media screen and (max-width: 768px) {
+  max-width: 80px;
+  max-height: 80px;
+}
 `
 
 const CatBox = styled(m.div)`

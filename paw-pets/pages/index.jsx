@@ -6,6 +6,7 @@ import { selectRandomFromArray, generateRandomNumber, getOwnerKittiesWithData, g
 import { useEffect, useState, useRef, createContext, useContext } from 'react';
 import useSound from 'use-sound';
 import CatDexCard from '@/components/Molecules/CatDexCard';
+import MobileCatDexCard from '@/components/Molecules/CatDexCard/MobileCatDexCard';
 import UserInterface from '@/components/Organisms/UserInterface';
 import Cat from '@/components/Atoms/Cat';
 import styled from 'styled-components';
@@ -22,6 +23,8 @@ import Loader from '@/components/Molecules/Loader';
 import catMeow from "@/data/meow.json";
 import WalletConnect from '@/components/Atoms/WalletConnect';
 import { useAutoConnect } from '@/components/Atoms/WalletConnect/AutoConnectProvider';
+import { useMobileDetector } from '@/util/mobileDetector';
+import { addMobileTouchListeners, removeMobileTouchListeners, isTouchDevice } from '@/util/mobileTouchHandler';
 
 const GameArea = styled.div`
 position:absolute;
@@ -32,6 +35,10 @@ display:flex;
 align-items:center;
 justify-content:center;
 pointer-events:auto;
+
+@media screen and (max-width: 768px) {
+  padding: 1rem;
+}
 `
 
 const PopUps = styled.div`
@@ -49,6 +56,7 @@ export const userContext = createContext()
 export default function Home() {
   const [selectedKitty, setSelectedKitty] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const { isMobile, isTablet, isSmallMobile, isLargeMobile, orientation } = useMobileDetector();
 
   // wallet state
   const [isWalletConnected, setIsWalletConnected] = useState(false);
@@ -349,6 +357,17 @@ export default function Home() {
     initializeApp();
   }, [isWalletConnected])
 
+  // Mobile touch handlers
+  useEffect(() => {
+    if (isMobile && isTouchDevice()) {
+      addMobileTouchListeners();
+      
+      return () => {
+        removeMobileTouchListeners();
+      };
+    }
+  }, [isMobile]);
+
   useEffect(() => {
     const storedTreats = JSON.parse(localStorage.getItem('treats')) || getHardcodedTreats();
     setCurrentTreats(storedTreats);
@@ -384,15 +403,32 @@ export default function Home() {
       </Head>
       <Loader active={loading} />
 
-      <main className={`${styles.main} background`} style={{ backgroundImage: (`url('/backgrounds/${background}.png')`) }}>
+      <main className={`${styles.main} background ${isMobile ? 'background-mobile' : ''}`} style={{ backgroundImage: (`url('/backgrounds/${background}.png')`) }}>
         <EmptySpace />
 
-        <userContext.Provider value={{ weather, currentUser, currentOfferings, currentItems, currentTreats, setCurrentOfferings, setCurrentTreats, setOfferings, fetchTreats: getHardcodedTreats, fetchItems: getHardcodedItems, fetchOfferings: getHardcodedOfferings, bgm, bgmController, currentLeaderboard, cats, currentUserData, fetchLeaderboardUsers: getHardcodedLeaderboard, catDex, setCatDex, onDisconnect: handleWalletDisconnect, selectedKitty, setIsPlaying, isPlaying }}>
+        <userContext.Provider value={{ weather, currentUser, currentOfferings, currentItems, currentTreats, setCurrentOfferings, setCurrentTreats, setOfferings, fetchTreats: getHardcodedTreats, fetchItems: getHardcodedItems, fetchOfferings: getHardcodedOfferings, bgm, bgmController, currentLeaderboard, cats, setCats, currentUserData, fetchLeaderboardUsers: getHardcodedLeaderboard, catDex, setCatDex, onDisconnect: handleWalletDisconnect, selectedKitty, setIsPlaying, isPlaying, isMobile, isTablet, isSmallMobile, isLargeMobile, orientation }}>
           {currentUser && <UserInterface location={location} onWeatherSubmit={setNewWeather} onActiveClick={addActiveItem} onWeatherChange={onWeatherChange} onTreatClick={addTreat} selectCatCard={(id) => { setCatCard(id); setSelectedKitty(cats.find(cat => cat.id === id)); }} />}
-          <GameArea id="game">
+          <GameArea id="game" className={isMobile ? 'game-area-mobile' : ''}>
 
             {cats && cats.map((cat, i) => {
-              return <CatDexCard key={i} catData={cat} show={catCard} width={"65%"} onExit={() => { setCatCard(0) }} onCatExit={() => { setCatCard(0); setCatDex(true) }} />
+              return isMobile ? (
+                <MobileCatDexCard 
+                  key={i} 
+                  catData={cat} 
+                  show={catCard} 
+                  onExit={() => { setCatCard(0) }} 
+                  onCatExit={() => { setCatCard(0); setCatDex(true) }} 
+                />
+              ) : (
+                <CatDexCard 
+                  key={i} 
+                  catData={cat} 
+                  show={catCard} 
+                  width="65%" 
+                  onExit={() => { setCatCard(0) }} 
+                  onCatExit={() => { setCatCard(0); setCatDex(true) }} 
+                />
+              )
             })}
 
             <Advisor selectedKitty={selectedKitty} isPlaying={isPlaying} />

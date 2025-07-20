@@ -23,12 +23,21 @@ gap:2em;
 // @media (max-width: 1280px) {
 //    grid-template-columns:repeat(3, 1fr);
 // }
+
+@media screen and (max-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
 `
 const GridItem = styled.div`
 display: flex;
 align-items: center;
 justify-content: center;
 flex-direction:column;
+
+@media screen and (max-width: 768px) {
+    gap: 0.3rem;
+}
 `
 export default function ItemsSlider({
    active,

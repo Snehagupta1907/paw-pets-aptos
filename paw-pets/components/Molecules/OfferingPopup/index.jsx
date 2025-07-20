@@ -14,6 +14,11 @@ const BtnCont = styled.div`
     align-items: center;
     flex-direction: column;
     // gap: 1em;
+
+    @media screen and (max-width: 768px) {
+        width: 100%;
+        gap: 0.5rem;
+    }
 `
 
 export default function Offerings(

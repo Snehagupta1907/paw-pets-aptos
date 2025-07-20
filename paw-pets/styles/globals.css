@@ -1,4 +1,6 @@
 /* @import url('https://fonts.googleapis.com/css2?family=Fredoka'); */
+@import './mobile.css';
+
 :root {
   --primary: #FEF9ED;
   --primary-dark: #ededed;

@@ -14,6 +14,12 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 pointer-events:auto;
+
+@media screen and (max-width: 768px) {
+    padding: 1rem 1.5rem;
+    border-top: 4px solid var(--border);
+    gap: 0.5rem;
+}
 `
 
 export const SliderTabCont = styled(m.div)`
@@ -40,6 +46,12 @@ cursor:pointer;
     filter: brightness(95%);
     
 }
+
+@media screen and (max-width: 768px) {
+    width: 120px;
+    height: 35px;
+    border-radius: 1rem 1rem 0 0;
+}
 `
 const SliderTabsCont = styled.div`
 display:flex;
@@ -51,6 +63,11 @@ display:flex;
 transform:translateX(calc(12vw + 5em));
 gap:2em;
 align-items:end;
+
+@media screen and (max-width: 768px) {
+    transform: translateX(calc(8vw + 2rem));
+    gap: 1rem;
+}
 `
 const ButtonDiv = styled.div`
 pointer-events:auto;

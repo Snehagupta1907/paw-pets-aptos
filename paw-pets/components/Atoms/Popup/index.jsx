@@ -35,6 +35,16 @@ align-items:center;
 cursor:auto;
 z-index:56;
 border: 5px solid var(--border);
+
+@media screen and (max-width: 768px) {
+  width: 90vw;
+  max-width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  border-radius: 0.8rem;
+  border: 3px solid var(--border);
+}
 `
 
 export const PopUpNT = styled(m.div)`
@@ -49,6 +59,17 @@ cursor:auto;
 border: 5px solid var(--border);
 gap:1em;
 pointer-events:auto;
+
+@media screen and (max-width: 768px) {
+  width: 90vw;
+  max-width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 1.5rem 1rem;
+  border-radius: 0.8rem;
+  border: 3px solid var(--border);
+  gap: 0.5rem;
+}
 `
 
 export const TopTab = styled(m.div)`
