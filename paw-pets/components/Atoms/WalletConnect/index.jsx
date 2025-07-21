@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Button from '../Button';
 import Typography from '../Text';
-import { useAutoConnect } from './AutoConnectProvider';
+import { useAccount, useDisconnect } from 'wagmi';
+import { useAppKit } from '@reown/appkit/react';
 
 const WalletContainer = styled.div`
   display: flex;
@@ -24,20 +25,6 @@ const WalletCard = styled.div`
   width: 100%;
 `;
 
-const WalletButton = styled(Button)`
-  margin: 1rem 0;
-  width: 100%;
-  padding: 1rem 2rem;
-  font-size: 1.1rem;
-  border-radius: 15px;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  }
-`;
-
 const WalletInfo = styled.div`
   margin-top: 1rem;
   padding: 1rem;
@@ -53,143 +40,70 @@ const AddressText = styled.div`
   color: #333;
 `;
 
-const AutoConnectToggle = styled.div`
-  margin-top: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+const ConnectButton = styled(Button)`
+  margin: 1rem 0;
+  width: 100%;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
 `;
 
-const ToggleSwitch = styled.label`
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 24px;
+const DisconnectButton = styled(Button)`
+  margin: 1rem 0;
+  width: 100%;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 15px;
+  transition: all 0.3s ease;
   
-  input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  
-  span {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 24px;
-    
-    &:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
-    }
-  }
-  
-  input:checked + span {
-    background-color: var(--button-medium);
-  }
-  
-  input:checked + span:before {
-    transform: translateX(26px);
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   }
 `;
 
 export default function WalletConnect({ onConnect, onDisconnect, isConnected, account }) {
+  const { address, isConnected: wagmiConnected } = useAccount();
+  const { disconnect } = useDisconnect();
+  const { connect } = useAppKit();
   const [isLoading, setIsLoading] = useState(false);
-  const { autoConnect, setAutoConnect, isDisconnecting, setIsDisconnecting } = useAutoConnect();
-  const disconnectInProgress = useRef(false);
 
-  // Auto-connect effect
+  // Sync Wagmi state with parent component
   useEffect(() => {
-    console.log('Auto-connect effect triggered:', { autoConnect, isConnected, isDisconnecting, disconnectInProgress: disconnectInProgress.current });
-    
-    // Don't auto-connect if we're in the middle of disconnecting
-    if (disconnectInProgress.current) {
-      console.log('Skipping auto-connect - disconnect in progress');
-      return;
+    if (wagmiConnected && address && !isConnected) {
+      onConnect(address);
+    } else if (!wagmiConnected && isConnected) {
+      onDisconnect();
     }
-    
-    // If we're not connected and auto-connect is enabled, but we just disconnected, disable auto-connect
-    if (autoConnect && !isConnected && !isDisconnecting) {
-      console.log('Not connected but auto-connect is enabled - this might be after a disconnect');
-      // Only attempt to connect if we have a valid connection state
-      if (typeof window !== 'undefined' && window.petra) {
-        console.log('Attempting to auto-connect...');
-        connectWallet();
-      }
-    }
-  }, [isConnected, autoConnect, isDisconnecting]);
+  }, [wagmiConnected, address, isConnected, onConnect, onDisconnect]);
 
-  const connectWallet = async () => {
-    // Don't connect if we're in the middle of disconnecting
-    if (disconnectInProgress.current) {
-      console.log('Skipping connect - disconnect in progress');
-      return;
-    }
-    
+  const handleConnect = async () => {
     setIsLoading(true);
     try {
-      // Check if Petra wallet is available
-      if (typeof window !== 'undefined' && window.petra) {
-        const response = await window.petra.connect();
-        if (response && response.address) {
-          onConnect(response.address);
-          // Enable auto-connect after successful connection
-          setAutoConnect(true);
-        } else {
-          throw new Error('No address received from Petra wallet');
-        }
-      } else {
-        // If Petra is not available, show error
-        throw new Error('Petra wallet is not installed. Please install Petra wallet extension.');
-      }
+      await connect();
     } catch (error) {
       console.error('Failed to connect wallet:', error);
-      alert(error.message || 'Failed to connect to Petra wallet');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const disconnectWallet = async () => {
-    console.log('WalletConnect disconnectWallet called');
-    disconnectInProgress.current = true;
+  const handleDisconnect = async () => {
     setIsLoading(true);
-    setIsDisconnecting(true);
     try {
-      // Disable auto-connect first to prevent re-connection
-      setAutoConnect(false);
-      
-      // Call onDisconnect which now handles both local state and Petra disconnect
+      disconnect();
       await onDisconnect();
     } catch (error) {
       console.error('Failed to disconnect wallet:', error);
-      // Still call onDisconnect even if there's an error
-      await onDisconnect();
     } finally {
       setIsLoading(false);
-      setIsDisconnecting(false);
-      // Reset the ref after a delay to ensure all effects have run
-      setTimeout(() => {
-        disconnectInProgress.current = false;
-      }, 500);
     }
-  };
-
-  const handleAutoConnectToggle = () => {
-    setAutoConnect(!autoConnect);
   };
 
   const shortenAddress = (address) => {
@@ -216,25 +130,9 @@ export default function WalletConnect({ onConnect, onDisconnect, isConnected, ac
             />
             <AddressText>{shortenAddress(account)}</AddressText>
           </WalletInfo>
-          <AutoConnectToggle>
-            <Typography 
-              text="Auto-connect:" 
-              size="0.9rem" 
-              weight="500" 
-              color="var(--black)"
-            />
-            <ToggleSwitch>
-              <input 
-                type="checkbox" 
-                checked={autoConnect} 
-                onChange={handleAutoConnectToggle}
-              />
-              <span></span>
-            </ToggleSwitch>
-          </AutoConnectToggle>
-          <WalletButton
+          <DisconnectButton
             text={isLoading ? "Disconnecting..." : "Disconnect Wallet"}
-            onClick={disconnectWallet}
+            onClick={handleDisconnect}
             disabled={isLoading}
             color="var(--button-red)"
             colorhover="var(--border-hard)"
@@ -257,15 +155,15 @@ export default function WalletConnect({ onConnect, onDisconnect, isConnected, ac
           color="var(--button-medium)"
         />
         <Typography 
-          text="Connect your Petra wallet to start your cat adventure!" 
+          text="Connect your wallet to start your cat adventure!" 
           size="1.1rem" 
           weight="400" 
           color="var(--black)"
           style={{ marginBottom: '2rem' }}
         />
-        <WalletButton
-          text={isLoading ? "Connecting..." : "Connect Petra Wallet"}
-          onClick={connectWallet}
+        <ConnectButton
+          text={isLoading ? "Connecting..." : "Connect Wallet"}
+          onClick={handleConnect}
           disabled={isLoading}
           color="var(--button-medium)"
           colorhover="var(--border-hard)"
@@ -273,24 +171,8 @@ export default function WalletConnect({ onConnect, onDisconnect, isConnected, ac
           borderradius="15px"
           padding="1rem 2rem"
         />
-        <AutoConnectToggle>
-          <Typography 
-            text="Auto-connect:" 
-            size="0.9rem" 
-            weight="500" 
-            color="var(--black)"
-          />
-          <ToggleSwitch>
-            <input 
-              type="checkbox" 
-              checked={autoConnect} 
-              onChange={handleAutoConnectToggle}
-            />
-            <span></span>
-          </ToggleSwitch>
-        </AutoConnectToggle>
         <Typography 
-          text="Note: Please install Petra wallet extension if not already installed." 
+          text="Note: Please ensure you're connected to Base Sepolia network." 
           size="0.9rem" 
           weight="400" 
           color="var(--button-medium)"

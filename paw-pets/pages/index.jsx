@@ -22,7 +22,7 @@ import { GameContext } from './_app';
 import Loader from '@/components/Molecules/Loader';
 import catMeow from "@/data/meow.json";
 import WalletConnect from '@/components/Atoms/WalletConnect';
-import { useAutoConnect } from '@/components/Atoms/WalletConnect/AutoConnectProvider';
+import { useAccount, useDisconnect } from 'wagmi';
 import { useMobileDetector } from '@/util/mobileDetector';
 import { addMobileTouchListeners, removeMobileTouchListeners, isTouchDevice } from '@/util/mobileTouchHandler';
 
@@ -58,10 +58,13 @@ export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   const { isMobile, isTablet, isSmallMobile, isLargeMobile, orientation } = useMobileDetector();
 
+  // Wagmi hooks
+  const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
+
   // wallet state
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [walletAccount, setWalletAccount] = useState(null);
-  const { setIsDisconnecting, setAutoConnect } = useAutoConnect();
 
   // game data
   const [cats, setCats] = useState([]);
@@ -102,6 +105,23 @@ export default function Home() {
   }
   );
 
+  // Sync Wagmi connection state
+  useEffect(() => {
+    if (isConnected && address) {
+      setIsWalletConnected(true);
+      setWalletAccount(address);
+      setCurrentUser({
+        displayName: `User ${address.slice(0, 6)}...`,
+        uid: address,
+        address: address
+      });
+    } else {
+      setIsWalletConnected(false);
+      setWalletAccount(null);
+      setCurrentUser(null);
+    }
+  }, [isConnected, address]);
+
   // Wallet connection handlers
   const handleWalletConnect = (address) => {
     setIsWalletConnected(true);
@@ -114,26 +134,11 @@ export default function Home() {
   };
 
   const handleWalletDisconnect = async () => {
-    console.log('Main app handleWalletDisconnect called');
     try {
-      // Set global disconnect flag to prevent auto-connect
-      setIsDisconnecting(true);
-      
-      // Immediately disable auto-connect to prevent reconnection
-      setAutoConnect(false);
-      
-      // Try to disconnect from Petra wallet if available
-      if (typeof window !== 'undefined' && window.petra) {
-        try {
-          await window.petra.disconnect();
-        } catch (walletError) {
-          console.log('Petra wallet disconnect error (non-critical):', walletError);
-        }
-      }
+      disconnect();
     } catch (error) {
-      console.error('Failed to disconnect from Petra wallet:', error);
+      console.error('Failed to disconnect wallet:', error);
     } finally {
-      // Always reset local state regardless of Petra disconnect result
       setIsWalletConnected(false);
       setWalletAccount(null);
       setCurrentUser(null);
@@ -146,12 +151,6 @@ export default function Home() {
       setCurrentOfferings([]);
       setCurrentTreats([]);
       setCurrentLeaderboard([]);
-      
-      // Reset disconnect flag after a short delay to ensure state updates are complete
-      setTimeout(() => {
-        console.log('Resetting isDisconnecting flag');
-        setIsDisconnecting(false);
-      }, 100);
     }
   };
 

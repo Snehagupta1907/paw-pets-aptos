@@ -1,17 +1,19 @@
-import '@/styles/globals.css';
-import { Fredoka } from '@next/font/google';
-import Head from 'next/head'
+"use client"
+import { useState } from 'react';
+import Head from 'next/head';
 import { AnimatePresence, LazyMotion, domMax } from 'framer-motion';
-import { createContext, useState } from 'react';
-import { AutoConnectProvider } from '@/components/Atoms/WalletConnect/AutoConnectProvider';
 import { Toaster } from 'react-hot-toast';
+import { Fredoka } from '@next/font/google';
+import { AppKitProvider } from '../util/web3Config';
 
-const fredoka = Fredoka({ subsets: ['latin'] })
+const fredoka = Fredoka({ subsets: ['latin'] });
 
-export const GameContext = createContext()
+export const GameContext = createContext();
+
 export default function App({ Component, pageProps }) {
   const [Volume, setVolume] = useState(.5)
   const [BGMVolume, setBGMVolume] = useState(.2)
+  
   return <>
     <Head>
       <meta name="description" content="Paw Pets is a cozy cat web application to help you feel at ease. Meow meow." />
@@ -29,7 +31,7 @@ export default function App({ Component, pageProps }) {
         }
       `}</style>
 
-    <AutoConnectProvider>
+    <AppKitProvider>
       <GameContext.Provider value={{ Volume, setVolume, BGMVolume, setBGMVolume }}>
         <LazyMotion features={domMax} strict>
           <AnimatePresence mode="wait" initial={false}>
@@ -37,7 +39,7 @@ export default function App({ Component, pageProps }) {
           </AnimatePresence>
         </LazyMotion>
       </GameContext.Provider>
-    </AutoConnectProvider>
+    </AppKitProvider>
 
     <Toaster
       position="top-center"
