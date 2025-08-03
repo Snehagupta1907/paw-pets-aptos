@@ -29,7 +29,7 @@ left:0;
 width:100vw;
 display:flex;
 flex-direction:column;
-z-index:20;
+z-index:50;
 `
 
 const SliderTabBut = styled.div`
@@ -83,6 +83,7 @@ export function SliderTab({
     transition,
     exit,
     tabcolor,
+    position = 'bottom',
     onTab = () => { },
     onSecondTab = () => { },
     onExit = () => { },
@@ -93,7 +94,8 @@ export function SliderTab({
         <SliderTabCont initial={initial}
             animate={animate}
             transition={transition}
-            exit={exit}>
+            exit={exit}
+            position={position}>
             <SliderTabsCont>
                 <TopDiv>
                     <SliderTabBut onClick={onTab} tabcolor={tabcolor}>

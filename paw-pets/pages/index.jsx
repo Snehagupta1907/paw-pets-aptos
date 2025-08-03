@@ -447,7 +447,7 @@ export default function Home() {
           </GameArea>
         </userContext.Provider>
 
-        <h2 className={styles.head} id="meowing" >meowing @ {weather && weather.name.toLowerCase()}</h2>
+        {/* <h2 className={styles.head} id="meowing" >meowing @ {weather && weather.name.toLowerCase()}</h2> */}
 
       </main>
     </>
