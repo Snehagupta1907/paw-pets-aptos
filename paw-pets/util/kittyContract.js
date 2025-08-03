@@ -8,6 +8,16 @@ import { parseEther, formatEther } from 'viem';
 export const CONTRACT_ADDRESS_STR = CONTRACT_ADDRESS;
 export const CONTRACT_ABI_STR = CONTRACT_ABI;
 
+// Accessory categories based on the contract enum
+export const ACCESSORY_CATEGORIES = {
+  FURNITURE: { id: 0, name: 'Furniture' },
+  TOYS: { id: 1, name: 'Toys' },
+  DECORATIONS: { id: 2, name: 'Decorations' },
+  BEDDING: { id: 3, name: 'Bedding' },
+  PLANTS: { id: 4, name: 'Plants' },
+  MISC: { id: 5, name: 'Miscellaneous' }
+};
+
 // Request cache to prevent duplicate calls
 const requestCache = new Map();
 const pendingRequests = new Map();

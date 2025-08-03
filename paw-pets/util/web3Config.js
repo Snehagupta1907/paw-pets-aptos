@@ -1,10 +1,11 @@
 "use client";
 
-import { createAppKit } from '@reown/appkit/react';
+import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
-import { baseSepolia } from '@reown/appkit/networks';
+import { baseSepolia } from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import '@rainbow-me/rainbowkit/styles.css';
 
 // Contract configuration
 export const CONTRACT_ADDRESS = "0x503320Ec0664fd8bf4ADca4Eff2d5C8E7A0aBB46";
@@ -264,7 +265,7 @@ export const CONTRACT_ABI = [
 // 0. Setup queryClient
 const queryClient = new QueryClient();
 
-// 1. Get projectId from https://cloud.reown.com
+// 1. Get projectId from https://cloud.walletconnect.com
 const projectId = '6577096a73d74c214d3434d5a85174fd';
 
 // 2. Create a metadata object - optional
@@ -276,37 +277,27 @@ const metadata = {
 };
 
 // 3. Set the networks - focusing on Base Sepolia for now
-const networks = [baseSepolia];
+const chains = [baseSepolia];
 
-// 4. Create Wagmi Adapter
-export const wagmiAdapter = new WagmiAdapter({
-  networks,
+// 4. Create Wagmi config with Rainbow Kit
+const config = getDefaultConfig({
+  appName: 'Paw Pets',
   projectId,
-  ssr: true
+  chains,
+  ssr: true,
 });
-
-// 5. Create modal - wrap in try-catch to handle potential issues
-try {
-  createAppKit({
-    adapters: [wagmiAdapter],
-    networks,
-    projectId,
-    metadata,
-    features: {
-      analytics: true // Optional - defaults to your Cloud configuration
-    }
-  });
-} catch (error) {
-  console.warn('AppKit initialization warning:', error);
-}
 
 export function AppKitProvider({ children }) {
   return (
-    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider chains={chains}>
+          {children}
+        </RainbowKitProvider>
+      </QueryClientProvider>
     </WagmiProvider>
   );
 }
 
-// Export networks for use in components
-export { networks }; 
+// Export chains for use in components
+export { chains }; 

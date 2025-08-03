@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Button from '../Button';
 import Typography from '../Text';
 import { useAccount, useDisconnect } from 'wagmi';
-import { useAppKit } from '@reown/appkit/react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const WalletContainer = styled.div`
   display: flex;
@@ -40,17 +40,26 @@ const AddressText = styled.div`
   color: #333;
 `;
 
-const ConnectButton = styled(Button)`
+const ConnectButtonWrapper = styled.div`
   margin: 1rem 0;
   width: 100%;
-  padding: 1rem 2rem;
-  font-size: 1.1rem;
-  border-radius: 15px;
-  transition: all 0.3s ease;
   
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  /* Customize Rainbow Kit button styles */
+  .rainbow-kit-connect-button {
+    width: 100%;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    background: var(--button-medium);
+    color: white;
+    border: 4px solid var(--button-medium);
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      background: var(--border-hard);
+    }
   }
 `;
 
@@ -71,7 +80,6 @@ const DisconnectButton = styled(Button)`
 export default function WalletConnect({ onConnect, onDisconnect, isConnected, account }) {
   const { address, isConnected: wagmiConnected } = useAccount();
   const { disconnect } = useDisconnect();
-  const { connect } = useAppKit();
   const [isLoading, setIsLoading] = useState(false);
 
   // Sync Wagmi state with parent component
@@ -82,17 +90,6 @@ export default function WalletConnect({ onConnect, onDisconnect, isConnected, ac
       onDisconnect();
     }
   }, [wagmiConnected, address, isConnected, onConnect, onDisconnect]);
-
-  const handleConnect = async () => {
-    setIsLoading(true);
-    try {
-      await connect();
-    } catch (error) {
-      console.error('Failed to connect wallet:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleDisconnect = async () => {
     setIsLoading(true);
@@ -161,16 +158,9 @@ export default function WalletConnect({ onConnect, onDisconnect, isConnected, ac
           color="var(--black)"
           style={{ marginBottom: '2rem' }}
         />
-        <ConnectButton
-          text={isLoading ? "Connecting..." : "Connect Wallet"}
-          onClick={handleConnect}
-          disabled={isLoading}
-          color="var(--button-medium)"
-          colorhover="var(--border-hard)"
-          border="4px solid var(--button-medium)"
-          borderradius="15px"
-          padding="1rem 2rem"
-        />
+        <ConnectButtonWrapper>
+          <ConnectButton />
+        </ConnectButtonWrapper>
         <Typography 
           text="Note: Please ensure you're connected to Base Sepolia network." 
           size="0.9rem" 

@@ -1,11 +1,11 @@
 # Paw Pets - Web3 Integration with Base Sepolia
 
-This document explains the Web3 integration setup for Paw Pets using Reown AppKit and Base Sepolia.
+This document explains the Web3 integration setup for Paw Pets using Rainbow Kit and Base Sepolia.
 
 ## 🚀 New Web3 Stack
 
-### Reown AppKit Integration
-- **Provider**: Reown AppKit for modern Web3 wallet management
+### Rainbow Kit Integration
+- **Provider**: Rainbow Kit for modern Web3 wallet management
 - **Network**: Base Sepolia testnet
 - **Contract**: Deployed at `0x503320Ec0664fd8bf4ADca4Eff2d5C8E7A0aBB46`
 - **Framework**: Wagmi v2 + Viem v2
@@ -14,8 +14,7 @@ This document explains the Web3 integration setup for Paw Pets using Reown AppKi
 
 ```json
 {
-  "@reown/appkit": "^1.7.10",
-  "@reown/appkit-adapter-wagmi": "^1.7.10",
+  "@rainbow-me/rainbowkit": "=2.2.4",
   "@tanstack/react-query": "^5.81.2",
   "viem": "^2.31.4",
   "wagmi": "^2.15.6"
@@ -26,7 +25,7 @@ This document explains the Web3 integration setup for Paw Pets using Reown AppKi
 
 ### Web3 Configuration (`util/web3Config.js`)
 - Contract address and ABI
-- Reown AppKit setup with Base Sepolia
+- Rainbow Kit setup with Base Sepolia
 - Project ID: `6577096a73d74c214d3434d5a85174fd`
 - App metadata configuration
 
@@ -38,7 +37,7 @@ This document explains the Web3 integration setup for Paw Pets using Reown AppKi
 ## 🎮 Features
 
 ### Wallet Connection
-- Modern wallet connection via Reown AppKit
+- Modern wallet connection via Rainbow Kit
 - Support for MetaMask, WalletConnect, and other wallets
 - Automatic network switching to Base Sepolia
 
@@ -87,7 +86,7 @@ npm install
 ### 2. Environment Variables
 Create `.env.local`:
 ```
-NEXT_PUBLIC_REOWN_PROJECT_ID=6577096a73d74c214d3434d5a85174fd
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=6577096a73d74c214d3434d5a85174fd
 NEXT_PUBLIC_CONTRACT_ADDRESS=0x503320Ec0664fd8bf4ADca4Eff2d5C8E7A0aBB46
 ```
 
@@ -155,7 +154,7 @@ console.log("Kitty stats:", stats);
 ## 🔄 Migration from Aptos
 
 ### Key Changes
-1. **Wallet**: Petra → Reown AppKit (supports multiple wallets)
+1. **Wallet**: Petra → Rainbow Kit (supports multiple wallets)
 2. **Network**: Aptos Testnet → Base Sepolia
 3. **Currency**: APT → ETH
 4. **Framework**: Aptos SDK → Wagmi v2 + Viem v2
@@ -196,7 +195,7 @@ console.log("Kitty stats:", stats);
 
 ## 📚 Resources
 
-- [Reown AppKit Documentation](https://docs.reown.com)
+- [Rainbow Kit Documentation](https://www.rainbowkit.com)
 - [Base Sepolia Documentation](https://docs.base.org)
 - [Wagmi Documentation](https://wagmi.sh)
 - [Viem Documentation](https://viem.sh)

@@ -45,15 +45,22 @@ const nextConfig = {
       type: 'json',
     });
 
+    // Exclude @base-org/account from transpilation
+    config.module.rules.push({
+      test: /\.js$/,
+      include: /node_modules\/@base-org\/account/,
+      use: {
+        loader: 'ignore-loader',
+      },
+    });
+
     return config;
   },
   experimental: {
     esmExternals: 'loose',
   },
   transpilePackages: [
-    '@base-org/account',
-    '@reown/appkit',
-    '@reown/appkit-adapter-wagmi',
+    '@rainbow-me/rainbowkit',
     'viem',
     'wagmi'
   ],
